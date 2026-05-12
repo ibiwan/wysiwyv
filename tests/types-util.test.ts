@@ -1,7 +1,7 @@
 import { isArray, isBoolean, isNanValue, isNull, isNumber, isObject, isRegex, isString, isUndefined } from "../src/util/types";
 
 const values = [1, 'a', true, null, undefined, { a: 1 }, [1, 2, 3], () => { }, /regex/];
-const functions = [isString, isNumber, isBoolean, isNull, isUndefined, isObject, isArray, isNanValue, isRegex];
+
 describe('values get typed correctly', () => {
   test('isString', () => {
     expect(values.map(isString)).toEqual([false, true, false, false, false, false, false, false, false]);

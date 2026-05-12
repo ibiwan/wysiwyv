@@ -1,26 +1,34 @@
-import type { HookKey, HookPlugin, HookValue, MatchValues } from "../wysiwyv";
+import type { HookContext, HookKey, HookPlugin } from "../type";
+import { HookAssessor } from "../util/HookAssessment";
+import { MatchError, ValueError } from "../util/HookError";
 
-const WYV_KEY_VAL: HookKey = '$val';
+const WYV_KEY_VAL: HookKey = "$val";
+
+type WyvParamsVal = string;
+type WyvContextVal = HookContext<WyvParamsVal>;
 
 const valWyvern: HookPlugin = {
   handles: (value) => [WYV_KEY_VAL].includes(value),
   handlers: {
-    [WYV_KEY_VAL]: (value, _expected, path, params, matchValues) => {
-      const match = params;
-
+    [WYV_KEY_VAL]: (
+      value,
+      _expected,
+      { path, params: match, matchValues }: WyvContextVal,
+    ) => {
       if (!(match in matchValues)) {
+        // intentionally mutating passed-in object
         matchValues[match] = value;
-        return [];
+        return HookAssessor.SUCCESS;
       }
       if (value !== matchValues[match]) {
-        return [{
-          message: `Expected value with key '${match}' to match previous value '${matchValues[match]}', got '${value}'`,
-          path
-        }];
+        return HookAssessor.fault(
+          new MatchError(matchValues[match], value, match, path),
+        );
       }
-      return [];
-    }
-  }
-}
+
+      return HookAssessor.SUCCESS;
+    },
+  },
+};
 
 export default valWyvern;

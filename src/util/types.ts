@@ -1,35 +1,47 @@
-export const isString = (value: any):
+export const isString = (value: unknown):
   value is string =>
   typeof value === 'string';
 
-export const isNumber = (value: any):
+export const isNumber = (value: unknown):
   value is number =>
   typeof value === 'number' && Number.isFinite(value);
 
-export const isBoolean = (value: any):
+export const isBoolean = (value: unknown):
   value is boolean =>
   typeof value === 'boolean';
 
-export const isNull = (value: any):
+export const isNull = (value: unknown):
   value is null =>
   value === null;
 
-export const isUndefined = (value: any):
+export const notNull = <T>(value: T | undefined | null):
+  value is NonNullable<T> =>
+  value !== undefined && value !== null
+
+export const isUndefined = (value: unknown):
   value is undefined =>
   value === undefined;
 
-export const isObject = (value: any):
-  value is Record<string, any> =>
+export const isDefined = <T>(value: T | undefined):
+  value is T =>
+  value !== undefined;
+
+export const isObject = (value: unknown):
+  value is Record<string, unknown> =>
   typeof value === 'object' && value !== null && !Array.isArray(value);
 
-export const isArray = (value: any):
-  value is any[] =>
+export const isEmptyObject = (value: unknown):
+  value is Record<string, never> =>
+  isObject(value) && Object.keys(value).length === 0
+
+export const isArray = (value: unknown):
+  value is unknown[] =>
   Array.isArray(value);
 
-export const isNanValue = (value: any):
+export const isNanValue = (value: unknown):
   value is number =>
   typeof value === 'number' && Number.isNaN(value);
 
-export const isRegex = (value: any):
+export const isRegex = (value: unknown):
   value is RegExp =>
   value instanceof RegExp;
