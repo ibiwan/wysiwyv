@@ -15,7 +15,7 @@ describe("invalid core configurations", () => {
     };
 
     const wyv = makeWysiwyv();
-    const result = wyv.validate(expected as any as HookValue, candidate);
+    const result = wyv.validate(expected as unknown as HookValue, candidate);
 
     expect(result.errors).toEqual([
       {

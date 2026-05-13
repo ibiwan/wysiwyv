@@ -10,7 +10,6 @@ import {
   MissingElementError,
   SpecError,
   UnexpectedElementError,
-  UnexpectedElementsError,
 } from "../util/HookError";
 import { isDefined, isObject, isPlainObject } from "../util/types";
 

@@ -146,7 +146,7 @@ describe("Object Type Plugin", () => {
       obj: { $object: { $entireValue: {} } },
     };
     const candidate = { obj: new Map() };
-    const result = wyv.validate(expected as any as HookValue, candidate);
+    const result = wyv.validate(expected as unknown as HookValue, candidate);
 
     expect(result.errors).toEqual([
       {

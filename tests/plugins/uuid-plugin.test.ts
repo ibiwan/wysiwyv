@@ -96,13 +96,12 @@ describe("UUID Expected JSON Object", () => {
   });
 
   test("Invalid UUID version", () => {
-    const expected = { id: { $uuid: 4 } };
+    const expected = { id: { $uuid: 40 } };
     const candidate = { id: "6ba7b810-9dad-11d1-80b4-00c04fd430c8" }; // v1 UUID
     const result = wyv.validate(expected, candidate);
     expect(result.errors).toEqual([
       {
-        message:
-          "Type: Expected 'UUID of version '4'', got value '6ba7b810-9dad-11d1-80b4-00c04fd430c8'",
+        message: "Configuration Error: Unknown UUID version: '40'",
         path: ".id",
       },
     ]);

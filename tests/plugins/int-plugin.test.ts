@@ -62,7 +62,7 @@ describe("Int Type Plugin", () => {
   });
 
   const INT_PREDICATES: {
-    val: Number;
+    val: number;
     label: string;
     predicate: HookValue;
     succeed: boolean;

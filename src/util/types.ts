@@ -19,17 +19,17 @@ export const isUndefined = (value: unknown): value is undefined =>
 export const isDefined = <T>(value: T | undefined): value is T =>
   value !== undefined;
 
-export const isObject = (value: unknown): value is Object =>
+export const isObject = (value: unknown): value is object =>
   typeof value === "object" && value !== null && !Array.isArray(value);
 
-export const isPlainObject = (val: any): val is Record<string, unknown> => {
+export const isPlainObject = (val: unknown): val is Record<string, unknown> => {
   if (!isObject(val)) return false;
 
   const proto = Object.getPrototypeOf(val);
   return proto === null || proto === Object.prototype;
 };
 
-export const isOddObject = (val: any): val is Object => {
+export const isOddObject = (val: unknown): val is object => {
   if (!isObject(val)) return false;
 
   const proto = Object.getPrototypeOf(val);

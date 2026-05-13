@@ -1,6 +1,6 @@
 import type { HookContext, HookPlugin, HookValue } from "../type";
 import { HookAssessor } from "../util/HookAssessment";
-import { CollectionError, ConfigError, ValueError } from "../util/HookError";
+import { CollectionError, ConfigError } from "../util/HookError";
 
 export const WYV_KEY_OR = "$or";
 
@@ -18,6 +18,12 @@ const orWyvern: HookPlugin = {
       if (!Array.isArray(params)) {
         return HookAssessor.fault(
           new ConfigError("$or value should be an array of templates", path),
+        );
+      }
+
+      if (params.length === 0) {
+        return HookAssessor.fault(
+          new ConfigError(`$or must take one or more predicates`, path),
         );
       }
 

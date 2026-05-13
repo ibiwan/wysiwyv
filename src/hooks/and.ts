@@ -1,6 +1,6 @@
 import type { HookContext, HookPlugin, HookValue } from "../type";
 import { HookAssessor } from "../util/HookAssessment";
-import { CollectionError, ConfigError, ValueError } from "../util/HookError";
+import { CollectionError, ConfigError } from "../util/HookError";
 
 export const WYV_KEY_AND = "$and";
 

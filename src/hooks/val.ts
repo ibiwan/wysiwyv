@@ -1,6 +1,6 @@
 import type { HookContext, HookKey, HookPlugin } from "../type";
 import { HookAssessor } from "../util/HookAssessment";
-import { MatchError, ValueError } from "../util/HookError";
+import { MatchError } from "../util/HookError";
 
 const WYV_KEY_VAL: HookKey = "$val";
 

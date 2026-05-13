@@ -1,7 +1,6 @@
 import type { HookContext, HookKey, HookPlugin } from "../type";
 import { HookAssessor } from "../util/HookAssessment";
 import { AttributeError, SpecError } from "../util/HookError";
-import { repr } from "../util/stringify";
 import { isDefined, isNumber, isObject } from "../util/types";
 
 export const WYV_KEY_NUMBER: HookKey = "$number";

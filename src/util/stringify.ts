@@ -1,6 +1,6 @@
-import { isNanValue, isNull, isObject, isOddObject, isString } from "./types";
+import { isNanValue, isNull, isOddObject, isString } from "./types";
 
-function getDetailedType(val: Object) {
+function getDetailedType(val: object) {
   // This returns strings like "[object Map]", "[object Date]", "[object RegExp]"
   const rawType = Object.prototype.toString.call(val);
 
@@ -29,8 +29,6 @@ export const repr = (val: unknown) => {
   return [label, str].filter((s) => s).join(" ");
 };
 
-export const dd = (val: unknown) => {
+export const d = (val: unknown) => {
   console.log(repr(val));
-
-  process.exit(0);
 };
