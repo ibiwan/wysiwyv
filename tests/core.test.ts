@@ -44,11 +44,11 @@ describe("Simple Expected JSON Object", () => {
 
     expect(result.errors).toEqual([
       {
-        message: "Missing element at 'a': '1'",
+        message: "Missing element at 'a': expected '1'",
         path: ".a",
       },
       {
-        message: "Missing element at 'b': 'c'",
+        message: "Missing element at 'b': expected 'c'",
         path: ".b",
       },
     ]);
@@ -172,11 +172,11 @@ describe("Simple Expected JSON Object", () => {
         path: ".f",
       },
       {
-        message: "Missing element at index 1: '2'",
+        message: "Missing element at 'index 1': expected '2'",
         path: ".f[1]",
       },
       {
-        message: "Missing element at index 2: '3'",
+        message: "Missing element at 'index 2': expected '3'",
         path: ".f[2]",
       },
     ]);
@@ -272,7 +272,7 @@ describe("Simple Expected JSON Object", () => {
 
     expect(result.errors).toEqual([
       {
-        message: "Missing element at 'value': 'test'",
+        message: "Missing element at 'value': expected 'test'",
         path: ".j.nested.value",
       },
     ]);

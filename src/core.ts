@@ -26,6 +26,7 @@ import {
   isNull,
   isNumber,
   isObject,
+  isPlainObject,
   isString,
   isUndefined,
 } from "./util/types";
@@ -48,12 +49,14 @@ export const makeCore = (hooks: HookConfig, matchValues: MatchValues) => {
 
     const params = getHookParams(expected, key);
 
-    return (handler as AnyHookHandler)(candidate, expected, {
+    const result = (handler as AnyHookHandler)(candidate, expected, {
       path,
       params,
       matchValues,
       evaluate: evaluate,
     });
+
+    return result;
   };
 
   const expectNormal = (
@@ -72,7 +75,7 @@ export const makeCore = (hooks: HookConfig, matchValues: MatchValues) => {
         return expectNull(candidate, path);
       case isArray(expected):
         return expectArray(expected, candidate, path);
-      case isObject(expected):
+      case isPlainObject(expected):
         return expectObject(expected, candidate, path);
       default:
         return HookAssessor.fault(
@@ -186,7 +189,7 @@ export const makeCore = (hooks: HookConfig, matchValues: MatchValues) => {
     candidate: unknown,
     path: string,
   ): HookAssessment => {
-    if (!isObject(candidate)) {
+    if (!isPlainObject(candidate)) {
       return HookAssessor.fault(new SpecError("object", candidate, path));
     }
 
@@ -199,7 +202,7 @@ export const makeCore = (hooks: HookConfig, matchValues: MatchValues) => {
 
     missingKeys.forEach((k) => {
       errors.fault(
-        new MissingElementError(`'${k}'`, expected[k], `${path}.${k}`),
+        new MissingElementError(`${k}`, expected[k], `${path}.${k}`),
       );
     });
 

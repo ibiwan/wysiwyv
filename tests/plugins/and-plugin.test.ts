@@ -46,6 +46,10 @@ describe("AND boolean plugin", () => {
 
     expect(result.errors).toEqual([
       {
+        message: "Aggregate Error: $and",
+        path: ".name",
+      },
+      {
         message: "Type: Expected 'UUID', got value 'George'",
         path: ".name",
       },
@@ -64,6 +68,10 @@ describe("AND boolean plugin", () => {
 
     expect(result.errors).toEqual([
       {
+        message: "Aggregate Error: $and",
+        path: ".name",
+      },
+      {
         message: "Type: Expected 'UUID', got value 'George'",
         path: ".name",
       },
@@ -81,6 +89,10 @@ describe("AND boolean plugin", () => {
     const result = wyv.validate(expected, candidate);
 
     expect(result.errors).toEqual([
+      {
+        message: "Aggregate Error: $and",
+        path: ".name",
+      },
       {
         message: "Type: Expected 'UUID', got value 'George'",
         path: ".name",

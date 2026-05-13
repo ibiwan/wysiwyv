@@ -31,7 +31,9 @@ export type HookHandler = (
   options: HookContext,
 ) => HookAssessment;
 
-export type HookKey = `$${string}`;
+// second string forces at least one character after the initial dollar sign.
+// may not work in all typescript implementations.
+export type HookKey = `$${string}${string}`;
 
 export type HookHandlers = { [key: HookKey]: HookHandler };
 

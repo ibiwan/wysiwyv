@@ -23,8 +23,9 @@ const start = (errors: readonly HookError[] = []): HookAssessment => {
       return assessment;
     },
 
-    include(assessment: HookAssessment): HookAssessment {
-      _errors.push(...assessment.errors);
+    include(newAssessment: HookAssessment): HookAssessment {
+      _errors.push(...newAssessment.errors);
+
       return assessment;
     },
   };
@@ -33,6 +34,9 @@ const start = (errors: readonly HookError[] = []): HookAssessment => {
 };
 
 const SUCCESS = start();
+Object.freeze(SUCCESS.errors);
+Object.freeze(SUCCESS);
+
 const fault = (error: HookError) => start().fault(error);
 
 export const HookAssessor = {

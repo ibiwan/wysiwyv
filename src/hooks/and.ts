@@ -32,9 +32,11 @@ const andWyvern: HookPlugin = {
         return HookAssessor.SUCCESS;
       }
 
-      return HookAssessor.fault(new CollectionError("$and", path)).include(
-        errors,
-      );
+      const a = HookAssessor.fault(new CollectionError("$and", path));
+
+      const final = a.include(errors);
+
+      return final;
     },
   },
 };
