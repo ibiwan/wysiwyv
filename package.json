@@ -1,6 +1,7 @@
 {
   "name": "wysiwyv",
   "module": "index.ts",
+  "sideEffects": false,
   "type": "module",
   "scripts": {
     "start": "bun index.ts",

@@ -1,6 +1,5 @@
-import type { WysiwyvInstance } from "../src/type";
-import { dd } from "../src/util/stringify";
-import { makeWysiwyv } from "../src/wysiwyv";
+import type { WysiwyvInstance } from "../../src/type";
+import { makeWysiwyv } from "../../src/wysiwyv";
 
 const SAMPLES = [
   { value: "2020-12-09 16:09:53Z", ext: false, bas: false, strict: true },

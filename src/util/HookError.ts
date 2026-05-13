@@ -1,24 +1,14 @@
 import type { HookValue } from "../type";
-
-const stringify = (value: unknown) => {
-  if (typeof value === "string") return value;
-  if (typeof value === "number") return value.toString();
-  if (typeof value === "boolean") return value.toString();
-  if (value === null) return "null";
-  if (value === undefined) return "undefined";
-  return JSON.stringify(value);
-};
+import { repr } from "./stringify";
 
 export class HookError {
   message: string;
   path: string;
 
   constructor(messageTemplate: string, path: string, candidate: unknown) {
-    this.message = messageTemplate.replace("%s", stringify(candidate));
+    this.message = messageTemplate.replace("%s", repr(candidate));
     this.path = path;
   }
-
-  static with(message: string, path: string) {}
 }
 
 export class UnexpectedElementError extends HookError {
@@ -35,7 +25,7 @@ export class UnexpectedElementsError extends HookError {
 
 export class MissingElementError extends HookError {
   constructor(key: string, expected: HookValue | unknown, path: string) {
-    super(`Missing element at ${key}: '${expected}'`, path);
+    super(`Missing element at ${key}: '${expected}'`, path, null);
   }
 }
 
@@ -83,12 +73,12 @@ export class AttributeError extends HookError {
 
 export class ConfigError extends HookError {
   constructor(messageDetail: string, path: string) {
-    super(`Configuration Error: ${messageDetail}`, path);
+    super(`Configuration Error: ${messageDetail}`, path, null);
   }
 }
 
 export class CollectionError extends HookError {
   constructor(booleanFunction: string, path: string) {
-    super(`Aggregate Error: ${booleanFunction}`, path);
+    super(`Aggregate Error: ${booleanFunction}`, path, null);
   }
 }

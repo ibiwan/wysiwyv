@@ -1,6 +1,5 @@
-import type { WysiwyvInstance } from "../src/type";
-import { dd } from "../src/util/stringify";
-import { makeWysiwyv } from "../src/wysiwyv";
+import type { WysiwyvInstance } from "../../src/type";
+import { makeWysiwyv } from "../../src/wysiwyv";
 
 describe("AND boolean plugin", () => {
   let wyv: WysiwyvInstance;

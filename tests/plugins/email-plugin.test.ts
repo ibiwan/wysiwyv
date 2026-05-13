@@ -1,5 +1,5 @@
-import type { WysiwyvInstance } from "../src/type";
-import { makeWysiwyv } from "../src/wysiwyv";
+import type { WysiwyvInstance } from "../../src/type";
+import { makeWysiwyv } from "../../src/wysiwyv";
 
 const GOOD_EMAILS = [
   "simple@example.com",

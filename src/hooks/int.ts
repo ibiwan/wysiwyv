@@ -29,13 +29,23 @@ const intWyvern: HookPlugin = {
 
       if (isDefined($min) && isNumber($min) && value < $min) {
         errors.fault(
-          new AttributeError(WYV_KEY_INT + "." + "$min", $min, value, path),
+          new AttributeError(
+            WYV_KEY_INT + "." + "$min",
+            "≥" + $min,
+            value,
+            path,
+          ),
         );
       }
 
       if (isDefined($max) && isNumber($max) && value > $max) {
         errors.fault(
-          new AttributeError(WYV_KEY_INT + "." + "$max", $min, value, path),
+          new AttributeError(
+            WYV_KEY_INT + "." + "$max",
+            "≤" + $max,
+            value,
+            path,
+          ),
         );
       }
 
