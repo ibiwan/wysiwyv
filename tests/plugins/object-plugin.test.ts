@@ -157,6 +157,22 @@ describe("Object Type Plugin", () => {
     ]);
   });
 
+  it("validates expected $eachValue candidate value is reasonable", () => {
+    const expected = {
+      obj: { $object: { $eachValue: {} } },
+    };
+    const candidate = { obj: new Map() };
+    const result = wyv.validate(expected as unknown as HookValue, candidate);
+
+    expect(result.errors).toEqual([
+      {
+        message:
+          "Type: Expected 'plainobject for $eachValue', got value 'Map {}'",
+        path: ".obj",
+      },
+    ]);
+  });
+
   it("validates no unexpected config", () => {
     const expected = {
       obj: { $object: { $reverseObject: "no idea", $arrayLength: 2 } },

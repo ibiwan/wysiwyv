@@ -28,15 +28,10 @@ const orWyvern: HookPlugin = {
       }
 
       const errors = HookAssessor.start();
-
       for (const template of params) {
         const templateErrors = evaluate(template, value, path);
         if (templateErrors.success) return HookAssessor.SUCCESS;
         errors.include(templateErrors);
-      }
-
-      if (errors.success) {
-        return HookAssessor.SUCCESS;
       }
 
       return HookAssessor.fault(new CollectionError("$or", path)).include(

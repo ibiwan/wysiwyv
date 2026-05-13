@@ -106,4 +106,16 @@ describe("UUID Expected JSON Object", () => {
       },
     ]);
   });
+
+  test("Non-String UUID candidate", () => {
+    const expected = { id: "$uuid" };
+    const candidate = { id: 1241245 };
+    const result = wyv.validate(expected, candidate);
+    expect(result.errors).toEqual([
+      {
+        message: "Type: Expected 'string', got value '1241245'",
+        path: ".id",
+      },
+    ]);
+  });
 });

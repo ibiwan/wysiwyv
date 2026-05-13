@@ -15,6 +15,7 @@ import valWyvern from "./val";
 
 export const defaultHooks: HookConfig = [
   andWyvern,
+  // TODO: anyWyvern
   arrayWyvern,
   boolWyvern,
   datetimeWyvern,
@@ -22,6 +23,7 @@ export const defaultHooks: HookConfig = [
   intWyvern,
   numberWyvern,
   objectWyvern,
+  // TODO: oneOfWyvern
   orWyvern,
   stringWyvern,
   uuidWyvern,

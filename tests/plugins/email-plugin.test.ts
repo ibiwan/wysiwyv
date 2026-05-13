@@ -48,4 +48,15 @@ describe("Email Expected JSON Object", () => {
       },
     ]);
   });
+  it("rejects non-string email", () => {
+    const expected = { e: "$email" };
+    const candidate = { e: 12345 };
+    const result = wyv.validate(expected, candidate);
+    expect(result.errors).toEqual([
+      {
+        message: `Type: Expected 'string', got value '12345'`,
+        path: ".e",
+      },
+    ]);
+  });
 });

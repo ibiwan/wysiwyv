@@ -17,12 +17,6 @@ export class UnexpectedElementError extends HookError {
   }
 }
 
-export class UnexpectedElementsError extends HookError {
-  constructor(keys: string[], path: string) {
-    super(`Unexpected elements: '%s'`, path, keys);
-  }
-}
-
 export class MissingElementError extends HookError {
   constructor(key: string, expected: HookValue | unknown, path: string) {
     super(`Missing element at '${key}': expected '${expected}'`, path, null);

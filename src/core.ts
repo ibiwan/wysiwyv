@@ -31,15 +31,13 @@ import {
 } from "./util/types";
 
 export const makeCore = (hooks: HookConfig, matchValues: MatchValues) => {
+  /* eslint-disable @typescript-eslint/no-explicit-any */
   type AnyHookHandler = (
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     candidate: any,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     expected: any,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     context: HookContext<any>,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ) => any;
+  /* eslint-enable @typescript-eslint/no-explicit-any */
 
   const evaluate: WysiwyvEvaluator = (expected, candidate, path) => {
     const key = getHookKey(expected);
