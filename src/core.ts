@@ -40,15 +40,16 @@ export const makeCore = (hooks: PluginList, pluginSetups: MultiContext) => {
     if (!key) return expectNormal(expected, candidate, path);
 
     const hookSetup = perHookSetups[key] ?? ({} as HookObject);
-
     if (perHookContexts[key] == undefined) {
       perHookContexts[key] = {};
     }
+
     const hookContext: ContextObject = perHookContexts[key];
 
     const hookPlugin = hooks.find((h) => h.handles(key));
 
     const handler = hookPlugin?.handlers[key];
+
     if (!handler) return expectNormal(expected, candidate, path);
 
     const params = getHookParams(expected, key);

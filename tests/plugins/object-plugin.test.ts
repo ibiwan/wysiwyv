@@ -118,7 +118,7 @@ describe("Object Type Plugin", () => {
 
   it("validates entire value of an object, allow extra keys", () => {
     const expected = {
-      obj: { $object: { $entireValue: { a: "b", c: "d" } } },
+      obj: { $object: { $partial: { a: "b", c: "d" } } },
     };
     const candidate = { obj: { a: "b", c: "d", e: "f" } };
     const result = wyv.validate(expected, candidate);
@@ -126,9 +126,9 @@ describe("Object Type Plugin", () => {
     expect(result.success).toBe(true);
   });
 
-  it("validates expected $entireValue is reasonable", () => {
+  it("validates expected $partial is reasonable", () => {
     const expected = {
-      obj: { $object: { $entireValue: "not an object" } },
+      obj: { $object: { $partial: "not an object" } },
     };
     const candidate = { obj: { a: "b", c: "d", e: "f" } };
     const result = wyv.validate(expected, candidate);
@@ -136,15 +136,15 @@ describe("Object Type Plugin", () => {
     expect(result.errors).toEqual([
       {
         message:
-          "Configuration Error: $object.$entireValue option should be an object",
+          "Configuration Error: $object.$partial option should be an object",
         path: ".obj",
       },
     ]);
   });
 
-  it("validates expected $entireValue candidate value is reasonable", () => {
+  it("validates expected $partial candidate value is reasonable", () => {
     const expected = {
-      obj: { $object: { $entireValue: {} } },
+      obj: { $object: { $partial: {} } },
     };
     const candidate = { obj: new Map() };
     const result = wyv.validate(expected as unknown as HookValue, candidate);
@@ -152,15 +152,15 @@ describe("Object Type Plugin", () => {
     expect(result.errors).toEqual([
       {
         message:
-          "Type: Expected 'plainobject for $entireValue', got value 'Map {}'",
+          "Type: Expected 'plainobject for $partial', got value 'Map {}'",
         path: ".obj",
       },
     ]);
   });
 
-  it("validates expected $eachValue candidate value is reasonable", () => {
+  it("validates expected $eachElement candidate value is reasonable", () => {
     const expected = {
-      obj: { $object: { $eachValue: {} } },
+      obj: { $object: { $eachElement: {} } },
     };
     const candidate = { obj: new Map() };
     const result = wyv.validate(expected as unknown as HookValue, candidate);
@@ -168,7 +168,7 @@ describe("Object Type Plugin", () => {
     expect(result.errors).toEqual([
       {
         message:
-          "Type: Expected 'plainobject for $eachValue', got value 'Map {}'",
+          "Type: Expected 'plainobject for $eachElement', got value 'Map {}'",
         path: ".obj",
       },
     ]);
@@ -192,7 +192,7 @@ describe("Object Type Plugin", () => {
 
   it("validates no conflicting config", () => {
     const expected = {
-      obj: { $object: { $entireValue: "no idea", $eachValue: 2 } },
+      obj: { $object: { $partial: "no idea", $eachElement: 2 } },
     };
     const candidate = { obj: { a: "b", c: "d", e: "f" } };
     const result = wyv.validate(expected, candidate);
@@ -200,15 +200,15 @@ describe("Object Type Plugin", () => {
     expect(result.errors).toEqual([
       {
         message:
-          "Configuration Error: $object options can specify $entireValue or $eachValue but not both",
+          "Configuration Error: $object options can specify $partial or $eachElement but not both",
         path: ".obj",
       },
     ]);
   });
 
-  it("validates entire value of an object, rejects missing keys", () => {
+  it("validates partial value of an object, rejects missing keys", () => {
     const expected = {
-      obj: { $object: { $entireValue: { a: "b", c: "d" } } },
+      obj: { $object: { $partial: { a: "b", c: "d" } } },
     };
     const candidate = { obj: { a: "b" } };
     const result = wyv.validate(expected, candidate);
@@ -221,28 +221,11 @@ describe("Object Type Plugin", () => {
     ]);
   });
 
-  it("checks entire value of an object, rejects extra keys", () => {
-    const expected = {
-      obj: {
-        $object: { $allowOthers: false, $entireValue: { a: "b", c: "d" } },
-      },
-    };
-    const candidate = { obj: { a: "b", c: "d", e: "f" } };
-    const result = wyv.validate(expected, candidate);
-
-    expect(result.errors).toEqual([
-      {
-        message: "Unexpected element at 'e': got 'f'",
-        path: ".obj.e",
-      },
-    ]);
-  });
-
   it("checks each value of an object, string", () => {
     const expected = {
       obj: {
         $object: {
-          $eachValue: "$string",
+          $eachElement: "$string",
         },
       },
     };
@@ -256,7 +239,7 @@ describe("Object Type Plugin", () => {
     const expected = {
       obj: {
         $object: {
-          $eachValue: "$string",
+          $eachElement: "$string",
         },
       },
     };
@@ -272,7 +255,7 @@ describe("Object Type Plugin", () => {
     const expected = {
       obj: {
         $object: {
-          $eachValue: { $array: { $length: 2 } },
+          $eachElement: { $array: { $length: 2 } },
         },
       },
     };
@@ -285,7 +268,7 @@ describe("Object Type Plugin", () => {
     const expected = {
       obj: {
         $object: {
-          $eachValue: { $array: { $length: 2 } },
+          $eachElement: { $array: { $length: 2 } },
         },
       },
     };

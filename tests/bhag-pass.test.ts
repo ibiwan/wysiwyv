@@ -84,7 +84,7 @@ describe("big hairy template matches big hairy data", () => {
   const template: HookValue = {
     store_id: { $and: ["$uuid", { $val: "store_ref" }] },
     store_name: "Velodrome Supply Co.",
-    last_updated: "$isodate",
+    last_updated: { $and: ["$isodate", "$any"] },
     contact: {
       email: "$email",
       phone: "619-555-0142",
@@ -109,14 +109,11 @@ describe("big hairy template matches big hairy data", () => {
           specs: {
             $and: [
               {
-                $object: {
-                  $entireValue: { weight_kg: "$number" },
-                  $allowOthers: true,
-                },
+                $object: { $partial: { weight_kg: "$number" } },
               },
               {
                 $plainobject: {
-                  $eachValue: {
+                  $eachElement: {
                     $or: ["$number", "$string", { $array: "$string" }],
                   },
                 },
@@ -140,14 +137,17 @@ describe("big hairy template matches big hairy data", () => {
       lawsuits: null,
     },
     departments: {
-      $and: [{ $array: "$string" }, ["Bicycles", "Accessories", "Apparel"]],
+      $and: [
+        { $array: "$string" }, // each element is a string
+        ["Bicycles", "Accessories", "Apparel"], // exact tuple
+      ],
     },
     locations: [
-      { $object: { $entireValue: { id: { $uuid: 0 } }, $allowOthers: true } },
-      { $object: { $entireValue: { id: { $uuid: 1 } }, $allowOthers: true } },
-      { $object: { $entireValue: { id: { $uuid: 4 } }, $allowOthers: true } },
-      { $object: { $entireValue: { id: { $uuid: 7 } }, $allowOthers: true } },
-      { $object: { $entireValue: { id: { $uuid: "F" } }, $allowOthers: true } },
+      { $object: { $partial: { id: { $uuid: 0 } } } },
+      { $object: { $partial: { id: { $uuid: 1 } } } },
+      { $object: { $partial: { id: { $uuid: 4 } } } },
+      { $object: { $partial: { id: { $uuid: 7 } } } },
+      { $object: { $partial: { id: { $uuid: "F" } } } },
     ],
   };
 

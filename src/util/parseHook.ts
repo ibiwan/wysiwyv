@@ -11,6 +11,7 @@ export const getHookKey = (val: HookValue): HookKey | null => {
 
   if (isObject(val) && Object.keys(val).length === 1) {
     const key = Object.keys(val)[0] as string;
+
     if (key.startsWith("$") && !key.startsWith("$$")) {
       return key as HookKey;
     }

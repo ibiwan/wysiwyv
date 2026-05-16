@@ -3,51 +3,44 @@ import type { HookValue } from "../type/template";
 import type { HookEnviron } from "../type/plugin";
 import type { WyvPlugin } from "../type/plugin";
 import { HookAssessor, type HookAssessment } from "../util/HookAssessment";
-import {
-  ConfigError,
-  MissingElementError,
-  SpecError,
-  UnexpectedElementError,
-} from "../util/HookError";
+import { ConfigError, MissingElementError, SpecError } from "../util/HookError";
 import { isDefined, isObject, isPlainObject } from "../util/types";
 
 export const WYV_KEY_OBJECT = "$object";
 export const WYV_KEY_PLAINOBJECT = "$plainobject";
 
 type WyvParamsObject = {
-  $allowOthers?: boolean;
-  $entireValue?: HookValue;
-  $eachValue?: HookValue;
+  $partial?: HookValue;
+  $eachElement?: HookValue;
 };
 type WyvSetupObject = object;
 type WyvContextObject = HookEnviron<WyvParamsObject>;
 
-const validateEntireValue = (
-  $entireValue: HookValue,
+const validatePartial = (
+  $partial: HookValue,
   value: Record<string, unknown>,
-  $allowOthers: boolean,
   path: string,
   evaluate: WysiwyvEvaluatorFunction,
 ): HookAssessment => {
   const errors = HookAssessor.start();
-  if (!isPlainObject($entireValue)) {
+  if (!isPlainObject($partial)) {
     errors.fault(
-      new ConfigError("$object.$entireValue option should be an object", path),
+      new ConfigError("$object.$partial option should be an object", path),
     );
   } else {
-    for (const expectedKey in $entireValue) {
+    for (const expectedKey in $partial) {
       if (!(expectedKey in value)) {
         errors.fault(
           new MissingElementError(
             expectedKey,
-            $entireValue[expectedKey],
+            $partial[expectedKey],
             `${path}.${expectedKey}`,
           ),
         );
         continue;
       }
 
-      const expectedSub = $entireValue[expectedKey] as HookValue; // because it came from a hook object
+      const expectedSub = $partial[expectedKey] as HookValue; // because it came from a hook object
       const candidateSub = value[expectedKey];
       const valueErrors = evaluate(
         expectedSub,
@@ -56,24 +49,12 @@ const validateEntireValue = (
       );
       errors.include(valueErrors);
     }
-    if (!$allowOthers) {
-      for (const valueKey in value) {
-        if (!(valueKey in $entireValue))
-          errors.fault(
-            new UnexpectedElementError(
-              valueKey,
-              value[valueKey],
-              `${path}.${valueKey}`,
-            ),
-          );
-      }
-    }
   }
   return errors;
 };
 
-const validateEachValue = (
-  $eachValue: HookValue,
+const validateeachElement = (
+  $eachElement: HookValue,
   value: Record<string, unknown>,
   path: string,
   evaluate: WysiwyvEvaluatorFunction,
@@ -82,7 +63,7 @@ const validateEachValue = (
 
   for (const valueKey in value) {
     const eachErrors = evaluate(
-      $eachValue as HookValue,
+      $eachElement as HookValue,
       value[valueKey],
       `${path}.${valueKey}`,
     );
@@ -111,9 +92,8 @@ const validateObject =
     const errors = HookAssessor.start();
 
     const {
-      $allowOthers = true,
-      $entireValue = undefined,
-      $eachValue = undefined,
+      $partial = undefined,
+      $eachElement = undefined,
       ...rest
     } = isObject(params) ? params : {};
 
@@ -126,38 +106,37 @@ const validateObject =
       );
     }
 
-    if (isDefined($entireValue) && isDefined($eachValue)) {
+    if (isDefined($partial) && isDefined($eachElement)) {
       errors.fault(
         new ConfigError(
-          "$object options can specify $entireValue or $eachValue but not both",
+          "$object options can specify $partial or $eachElement but not both",
           path,
         ),
       );
       return errors;
     }
 
-    if (isDefined($entireValue)) {
+    if (isDefined($partial)) {
       if (!isPlainObject(value)) {
-        errors.fault(
-          new SpecError("plainobject for $entireValue", value, path),
-        );
+        errors.fault(new SpecError("plainobject for $partial", value, path));
       } else {
-        const entireErrors = validateEntireValue(
-          $entireValue,
-          value,
-          $allowOthers,
-          path,
-          evaluate,
-        );
+        const entireErrors = validatePartial($partial, value, path, evaluate);
         errors.include(entireErrors);
       }
     }
 
-    if (isDefined($eachValue)) {
+    if (isDefined($eachElement)) {
       if (!isPlainObject(value)) {
-        errors.fault(new SpecError("plainobject for $eachValue", value, path));
+        errors.fault(
+          new SpecError("plainobject for $eachElement", value, path),
+        );
       } else {
-        const eachErrors = validateEachValue($eachValue, value, path, evaluate);
+        const eachErrors = validateeachElement(
+          $eachElement,
+          value,
+          path,
+          evaluate,
+        );
         errors.include(eachErrors);
       }
     }

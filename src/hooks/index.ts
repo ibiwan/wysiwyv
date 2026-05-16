@@ -1,6 +1,7 @@
 import type { PluginList } from "../type/plugin";
-import andWyvern from "./and";
 
+import andWyvern from "./and";
+import anyWyvern from "./any";
 import arrayWyvern from "./array";
 import boolWyvern from "./bool";
 import datetimeWyvern from "./datetime";
@@ -15,7 +16,7 @@ import valWyvern from "./val";
 
 export const defaultHooks: PluginList = [
   andWyvern,
-  // TODO: anyWyvern
+  anyWyvern,
   arrayWyvern,
   boolWyvern,
   datetimeWyvern,
@@ -23,7 +24,6 @@ export const defaultHooks: PluginList = [
   intWyvern,
   numberWyvern,
   objectWyvern,
-  // TODO: oneOfWyvern
   orWyvern,
   stringWyvern,
   uuidWyvern,
