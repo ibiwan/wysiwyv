@@ -9,6 +9,8 @@ describe("big hairy plugins template rejects big hairy data", () => {
     d: [1, 2, 3],
     e: [1, 2, 3],
     f: false,
+    g: -1,
+    h: "emailathostdotdomain",
   };
   const template: HookValue = {
     a: { $and: "not-an-array" },
@@ -17,6 +19,8 @@ describe("big hairy plugins template rejects big hairy data", () => {
     d: { $array: { $length: 3, $purple: true } },
     e: { $array: { $length: 4, $minlength: 4, $maxlength: 2 } },
     f: { $and: ["$isodate", "$basicisodate", "$strictisodate"] },
+    g: "$email",
+    h: "$email",
   };
 
   it("rejects a custom lot", () => {
@@ -73,6 +77,15 @@ describe("big hairy plugins template rejects big hairy data", () => {
       {
         message: "Type: Expected 'RFC 3339 date', got value 'false'",
         path: ".f",
+      },
+      {
+        message: "Type: Expected 'string', got value '-1'",
+        path: ".g",
+      },
+      {
+        message:
+          "Type: Expected 'valid email address', got value 'emailathostdotdomain'",
+        path: ".h",
       },
     ]);
   });
