@@ -1,4 +1,4 @@
-import type { WysiwyvEvaluatorFunction } from "../type";
+import type { WysiwyvEvaluatorFunction } from "./engine";
 import type { HookValue } from "./template";
 
 import type { HookAssessment } from "../util/HookAssessment";

@@ -12,3 +12,10 @@ export type WysiwyvInstance = {
   validate: (expected: HookValue, candidate: unknown) => HookAssessment;
 };
 export type WysiwyvFactory = (config?: WysiwyvConfig) => WysiwyvInstance;
+
+// passed to each plugin to enable custom descent
+export type WysiwyvEvaluatorFunction = (
+  expected: HookValue,
+  candidate: unknown,
+  path: string,
+) => HookAssessment;
