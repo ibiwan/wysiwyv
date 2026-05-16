@@ -1,13 +1,16 @@
-import type { HookContext, HookPlugin, HookValue } from "../type";
+import type { HookValue } from "../type/template";
+import type { HookEnviron } from "../type/plugin";
+import type { WyvPlugin } from "../type/plugin";
 import { HookAssessor } from "../util/HookAssessment";
 import { CollectionError, ConfigError } from "../util/HookError";
 
 export const WYV_KEY_AND = "$and";
 
 type WyvParamsAnd = HookValue[];
-type WyvContextAnd = HookContext<WyvParamsAnd>;
+type WyvSetupAnd = object;
+type WyvContextAnd = HookEnviron<WyvParamsAnd>;
 
-const andWyvern: HookPlugin = {
+const andWyvern: WyvPlugin<WyvParamsAnd, WyvSetupAnd, WyvContextAnd> = {
   handles: (value) => [WYV_KEY_AND].includes(value),
   handlers: {
     [WYV_KEY_AND]: (

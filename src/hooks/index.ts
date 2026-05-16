@@ -1,4 +1,4 @@
-import type { HookConfig } from "../type";
+import type { PluginList } from "../type/plugin";
 import andWyvern from "./and";
 
 import arrayWyvern from "./array";
@@ -13,7 +13,7 @@ import stringWyvern from "./string";
 import uuidWyvern from "./uuid";
 import valWyvern from "./val";
 
-export const defaultHooks: HookConfig = [
+export const defaultHooks: PluginList = [
   andWyvern,
   // TODO: anyWyvern
   arrayWyvern,

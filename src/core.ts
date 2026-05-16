@@ -1,10 +1,9 @@
-import {
-  type HookConfig,
-  type HookContext,
-  type HookValue,
-  type MatchValues,
-  type WysiwyvEvaluator,
-} from "./type";
+import { type WysiwyvEvaluatorFunction } from "./type";
+import { type ContextObject } from "./type/plugin";
+import { type HookValue } from "./type/template";
+import { type HookObject } from "./type/template";
+import { type HookHandler } from "./type/plugin";
+import { type PluginList } from "./type/plugin";
 
 import { HookAssessor, type HookAssessment } from "./util/HookAssessment";
 
@@ -29,19 +28,23 @@ import {
   isString,
   isUndefined,
 } from "./util/types";
+import type { MultiContext } from "./type/engine";
 
-export const makeCore = (hooks: HookConfig, matchValues: MatchValues) => {
-  /* eslint-disable @typescript-eslint/no-explicit-any */
-  type AnyHookHandler = (
-    candidate: any,
-    expected: any,
-    context: HookContext<any>,
-  ) => any;
-  /* eslint-enable @typescript-eslint/no-explicit-any */
+export const makeCore = (hooks: PluginList, pluginSetups: MultiContext) => {
+  const perHookSetups: MultiContext = Object.freeze({ ...pluginSetups });
+  const perHookContexts: MultiContext = {};
+  const sharedContext: HookObject = {};
 
-  const evaluate: WysiwyvEvaluator = (expected, candidate, path) => {
+  const evaluate: WysiwyvEvaluatorFunction = (expected, candidate, path) => {
     const key = getHookKey(expected);
     if (!key) return expectNormal(expected, candidate, path);
+
+    const hookSetup = perHookSetups[key] ?? ({} as HookObject);
+
+    if (perHookContexts[key] == undefined) {
+      perHookContexts[key] = {};
+    }
+    const hookContext: ContextObject = perHookContexts[key];
 
     const hookPlugin = hooks.find((h) => h.handles(key));
 
@@ -50,10 +53,12 @@ export const makeCore = (hooks: HookConfig, matchValues: MatchValues) => {
 
     const params = getHookParams(expected, key);
 
-    const result = (handler as AnyHookHandler)(candidate, expected, {
+    const result = (handler as HookHandler)(candidate, expected, {
       path,
       params,
-      matchValues,
+      setup: hookSetup,
+      context: hookContext,
+      shared: sharedContext,
       evaluate: evaluate,
     });
 

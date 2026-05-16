@@ -1,4 +1,6 @@
-import type { HookContext, HookKey, HookPlugin } from "../type";
+import type { HookEnviron } from "../type/plugin";
+import type { HookKey } from "../type/plugin";
+import type { WyvPlugin } from "../type/plugin";
 import { HookAssessor } from "../util/HookAssessment";
 import { AttributeError, SpecError } from "../util/HookError";
 import { isDefined, isNumber, isObject } from "../util/types";
@@ -11,9 +13,14 @@ type WyvParamsNumber = {
   $gt?: number;
   $lt?: number;
 };
-type WyvContextNumber = HookContext<WyvParamsNumber>;
+type WyvSetupNumber = object;
+type WyvContextNumber = HookEnviron<WyvParamsNumber>;
 
-const numberWyvern: HookPlugin = {
+const numberWyvern: WyvPlugin<
+  WyvParamsNumber,
+  WyvSetupNumber,
+  WyvContextNumber
+> = {
   handles: (value) => [WYV_KEY_NUMBER].includes(value),
   handlers: {
     [WYV_KEY_NUMBER]: (

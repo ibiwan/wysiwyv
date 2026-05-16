@@ -1,4 +1,5 @@
-import type { HookContext, HookPlugin } from "../type";
+import type { HookEnviron } from "../type/plugin";
+import type { WyvPlugin } from "../type/plugin";
 import { HookAssessor } from "../util/HookAssessment";
 import { AttributeError, ConfigError, SpecError } from "../util/HookError";
 import { isArray, isDefined, isNumber, isObject, notNull } from "../util/types";
@@ -15,9 +16,10 @@ type WyvParamsArray = {
   [WYV_ARRAY_PARAM_MAXLENGTH]?: number;
   [WYV_ARRAY_PARAM_EACH]?: unknown;
 };
-type WyvContextArray = HookContext<WyvParamsArray>;
+type WyvSetupArray = object;
+type WyvContextArray = HookEnviron<WyvParamsArray>;
 
-const arrayWyvern: HookPlugin = {
+const arrayWyvern: WyvPlugin<WyvParamsArray, WyvSetupArray, WyvContextArray> = {
   handles: (value) => [WYV_KEY_ARRAY].includes(value),
   handlers: {
     [WYV_KEY_ARRAY]: (

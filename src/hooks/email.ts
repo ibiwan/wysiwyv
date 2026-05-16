@@ -1,4 +1,5 @@
-import type { HookPlugin, HookValue } from "../type";
+import type { HookValue } from "../type/template";
+import type { WyvPlugin } from "../type/plugin";
 import { HookAssessor } from "../util/HookAssessment";
 import { SpecError } from "../util/HookError";
 import { isString } from "../util/types";
@@ -13,7 +14,7 @@ const RE_EMAIL_LOOSE = new RegExp(`^${EMAIL}$`);
 
 export const WYV_KEY_EMAIL = "$email";
 
-const emailWyvern: HookPlugin = {
+const emailWyvern: WyvPlugin = {
   handles: (value) => [WYV_KEY_EMAIL].includes(value),
   handlers: {
     [WYV_KEY_EMAIL]: (value: unknown, _expected: HookValue, { path }) => {

@@ -1,4 +1,4 @@
-import type { WysiwyvInstance } from "../../src/type";
+import type { WysiwyvInstance } from "../../src/type/engine";
 import { makeWysiwyv } from "../../src/wysiwyv";
 
 const SAMPLES = [

@@ -1,4 +1,5 @@
-import type { HookValue, WysiwyvInstance } from "../../src/type";
+import type { HookValue } from "../../src/type/template";
+import type { WysiwyvInstance } from "../../src/type/engine";
 import { makeWysiwyv } from "../../src/wysiwyv";
 
 describe("Object Type Plugin", () => {

@@ -1,5 +1,6 @@
-import type { HookKey, HookValue } from "../type";
-import { isObject, isString } from "./types";
+import type { HookValue } from "../type/template";
+import type { HookKey } from "../type/plugin";
+import { isObject, isPlainObject, isString } from "./types";
 
 export const getHookKey = (val: HookValue): HookKey | null => {
   if (isString(val)) {
@@ -16,10 +17,11 @@ export const getHookKey = (val: HookValue): HookKey | null => {
   }
 
   return null;
-}
+};
 
-export const getHookParams = (hook: HookValue, key: string) => {
-  const obj = isObject(hook) ? hook as Record<string, HookValue> : null;
-  const params = obj ? obj[key] : {};
-  return params
-}
+export const getHookParams = (hook: unknown, key: string): unknown => {
+  if (isPlainObject(hook)) {
+    return hook[key];
+  }
+  return null;
+};

@@ -1,4 +1,4 @@
-import type { HookValue } from "../type";
+import type { HookValue } from "../type/template";
 import { repr } from "./stringify";
 
 export class HookError {

@@ -1,9 +1,7 @@
-import type {
-  HookContext,
-  HookPlugin,
-  HookValue,
-  WysiwyvEvaluator,
-} from "../type";
+import type { WysiwyvEvaluatorFunction } from "../type";
+import type { HookValue } from "../type/template";
+import type { HookEnviron } from "../type/plugin";
+import type { WyvPlugin } from "../type/plugin";
 import { HookAssessor, type HookAssessment } from "../util/HookAssessment";
 import {
   ConfigError,
@@ -21,14 +19,15 @@ type WyvParamsObject = {
   $entireValue?: HookValue;
   $eachValue?: HookValue;
 };
-type WyvContextObject = HookContext<WyvParamsObject>;
+type WyvSetupObject = object;
+type WyvContextObject = HookEnviron<WyvParamsObject>;
 
 const validateEntireValue = (
   $entireValue: HookValue,
   value: Record<string, unknown>,
   $allowOthers: boolean,
   path: string,
-  evaluate: WysiwyvEvaluator,
+  evaluate: WysiwyvEvaluatorFunction,
 ): HookAssessment => {
   const errors = HookAssessor.start();
   if (!isPlainObject($entireValue)) {
@@ -77,7 +76,7 @@ const validateEachValue = (
   $eachValue: HookValue,
   value: Record<string, unknown>,
   path: string,
-  evaluate: WysiwyvEvaluator,
+  evaluate: WysiwyvEvaluatorFunction,
 ) => {
   const errors = HookAssessor.start();
 
@@ -166,7 +165,11 @@ const validateObject =
     return errors;
   };
 
-const objectWyvern: HookPlugin = {
+const objectWyvern: WyvPlugin<
+  WyvParamsObject,
+  WyvSetupObject,
+  WyvContextObject
+> = {
   handles: (value) => [WYV_KEY_OBJECT, WYV_KEY_PLAINOBJECT].includes(value),
   handlers: {
     [WYV_KEY_OBJECT]: validateObject(false),

@@ -1,4 +1,4 @@
-import type { HookValue } from "../src/type";
+import type { HookValue } from "../src/type/template";
 import { makeWysiwyv } from "../src/wysiwyv";
 
 describe("big hairy template matches big hairy data", () => {

@@ -1,4 +1,4 @@
-import type { WysiwyvInstance } from "../../src/type";
+import type { WysiwyvInstance } from "../../src/type/engine";
 import { makeWysiwyv } from "../../src/wysiwyv";
 
 describe("Val Expected JSON Object", () => {
@@ -10,10 +10,10 @@ describe("Val Expected JSON Object", () => {
   let wyv: WysiwyvInstance;
 
   beforeEach(() => {
-    wyv = makeWysiwyv({ values: predefs });
+    wyv = makeWysiwyv({ pluginSetups: { $val: predefs } });
   });
 
-  test("Valid generic UUID", () => {
+  test("Valid simple match", () => {
     const expected = {
       team: { $val: "team" },
       base: { $val: "apple" },

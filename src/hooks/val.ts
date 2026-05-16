@@ -1,28 +1,37 @@
-import type { HookContext, HookKey, HookPlugin } from "../type";
+import type { HookKey } from "../type/plugin";
+import type { WyvPlugin } from "../type/plugin";
 import { HookAssessor } from "../util/HookAssessment";
 import { MatchError } from "../util/HookError";
 
 const WYV_KEY_VAL: HookKey = "$val";
 
-type WyvParamsVal = string;
-type WyvContextVal = HookContext<WyvParamsVal>;
+type MatchDictionary = Record<string, unknown>;
 
-const valWyvern: HookPlugin = {
+type WyvParams = string;
+type WyvSetup = MatchDictionary;
+type WyvContext = { matches: MatchDictionary };
+
+const valWyvern: WyvPlugin<WyvParams, WyvSetup, WyvContext> = {
   handles: (value) => [WYV_KEY_VAL].includes(value),
   handlers: {
     [WYV_KEY_VAL]: (
       value,
       _expected,
-      { path, params: match, matchValues }: WyvContextVal,
+      { path, params: match, setup, context },
     ) => {
-      if (!(match in matchValues)) {
+      if (context.matches === undefined) {
+        context.matches = setup ?? {};
+      }
+
+      if (!(match in context.matches)) {
         // intentionally mutating passed-in object
-        matchValues[match] = value;
+        context.matches[match] = value;
         return HookAssessor.SUCCESS;
       }
-      if (value !== matchValues[match]) {
+
+      if (value !== context.matches[match]) {
         return HookAssessor.fault(
-          new MatchError(matchValues[match], value, match, path),
+          new MatchError(context.matches[match], value, match, path),
         );
       }
 

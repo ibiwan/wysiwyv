@@ -1,4 +1,5 @@
-import type { HookKey, HookPlugin } from "../type";
+import type { HookKey } from "../type/plugin";
+import type { WyvPlugin } from "../type/plugin";
 import { HookAssessor } from "../util/HookAssessment";
 import { ConfigError, SpecError } from "../util/HookError";
 import { isEmptyObject, isNumber, isString } from "../util/types";
@@ -71,7 +72,7 @@ const testByVersion = (version: Version, value: string) => {
   }
 };
 
-const uuidWyvern: HookPlugin = {
+const uuidWyvern: WyvPlugin = {
   handles: (value) => [WYV_KEY_UUID].includes(value),
   handlers: {
     $uuid: (value: unknown, _expected, { path, params }) => {
@@ -82,6 +83,7 @@ const uuidWyvern: HookPlugin = {
           new ConfigError(`Unknown UUID version: '${version}'`, path),
         );
       }
+
       if (!isString(value)) {
         return HookAssessor.fault(new SpecError("string", value, path));
       }

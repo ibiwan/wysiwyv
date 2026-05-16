@@ -1,11 +1,12 @@
-import type { HookPlugin, HookValue } from "../type";
+import type { HookValue } from "../type/template";
+import type { WyvPlugin } from "../type/plugin";
 import { HookAssessor } from "../util/HookAssessment";
 import { SpecError } from "../util/HookError";
 import { isString } from "../util/types";
 
 export const WYV_KEY_STRING = "$string";
 
-const stringWyvern: HookPlugin = {
+const stringWyvern: WyvPlugin = {
   handles: (value) => [WYV_KEY_STRING].includes(value),
   handlers: {
     [WYV_KEY_STRING]: (value: unknown, _expected: HookValue, { path }) => {
