@@ -35,7 +35,7 @@ describe("big hairy template matches big hairy data", () => {
         in_stock: true,
         quantity: 47,
         price_usd: 89.95,
-        added: "2025-12-01T09:30:00-08:00",
+        added: "2026-05-15 23:09:59Z",
         tags: ["security", "lock", "u-lock"],
         specs: {
           weight_kg: 1.4,
@@ -72,6 +72,13 @@ describe("big hairy template matches big hairy data", () => {
       confirmed: true,
       lawsuits: null,
     },
+    locations: [
+      { store: "0000", id: "00000000-0000-0000-0000-000000000000" },
+      { store: 1111, id: "14154bce-50f1-11f1-ab07-0242ac120002" },
+      { store: 4444, id: "5e39add7-9371-44ad-9a1e-5aeab239c767" },
+      { store: 7777, id: "019e2f7d-7bbd-749a-9fdf-fb0464d123e0" },
+      { store: "FFFF", id: "ffffffff-ffff-ffff-ffff-ffffffffffff" },
+    ],
   };
 
   const template: HookValue = {
@@ -86,20 +93,36 @@ describe("big hairy template matches big hairy data", () => {
       $array: {
         $minlength: 1,
         $each: {
-          sku: "$uuid",
+          sku: { $and: ["$uuid", "$string"] },
           category: "$string",
           name: "$string",
           in_stock: "$bool",
           quantity: { $int: { $min: 1 } },
           price_usd: "$number",
-          added: "$isodate",
+          added: { $or: ["$isodate", "$strictisodate"] },
           tags: {
             $array: {
               $minlength: 1,
               $each: "$string",
             },
           },
-          specs: "$object",
+          specs: {
+            $and: [
+              {
+                $object: {
+                  $entireValue: { weight_kg: "$number" },
+                  $allowOthers: true,
+                },
+              },
+              {
+                $plainobject: {
+                  $eachValue: {
+                    $or: ["$number", "$string", { $array: "$string" }],
+                  },
+                },
+              },
+            ],
+          },
         },
       },
     },
@@ -116,7 +139,16 @@ describe("big hairy template matches big hairy data", () => {
       confirmed: true,
       lawsuits: null,
     },
-    departments: ["Bicycles", "Accessories", "Apparel"],
+    departments: {
+      $and: [{ $array: "$string" }, ["Bicycles", "Accessories", "Apparel"]],
+    },
+    locations: [
+      { $object: { $entireValue: { id: { $uuid: 0 } }, $allowOthers: true } },
+      { $object: { $entireValue: { id: { $uuid: 1 } }, $allowOthers: true } },
+      { $object: { $entireValue: { id: { $uuid: 4 } }, $allowOthers: true } },
+      { $object: { $entireValue: { id: { $uuid: 7 } }, $allowOthers: true } },
+      { $object: { $entireValue: { id: { $uuid: "F" } }, $allowOthers: true } },
+    ],
   };
 
   it("matches", () => {
