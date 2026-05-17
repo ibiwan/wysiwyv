@@ -1,9 +1,10 @@
 import { d } from "../dev-util";
-import { HookAssessor } from "../src/util/HookAssessment";
+import { makeWysiwyv } from "../src/wysiwyv";
 
 it("bug-scratch file", () => {
-  const blah = HookAssessor.SUCCESS;
-  blah.fault({ message: "purple", path: "" });
-  const halb = HookAssessor.SUCCESS;
-  d(halb.errors);
+  const wyv = makeWysiwyv();
+  const data = "asf";
+  const expected = "$string";
+  const result = wyv.validate(expected, data);
+  d(result);
 });

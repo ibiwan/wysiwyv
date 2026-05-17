@@ -98,7 +98,7 @@ Read the [Included Plugins Documentation](README-INCLUDED-PLUGINS.md)
 
 - $and / $or
 - $any
-- $array / $object
+- $array / $object / $plainobject
 - $bool
 - $isodate / $basicisodate / $strictisodate
 - $email
