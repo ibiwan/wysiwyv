@@ -2,7 +2,7 @@ import type { HookValue } from "../type/template";
 import type { ContextObject } from "../type/plugin";
 import type { WyvPlugin } from "../type/plugin";
 import { HookAssessor } from "../util/HookAssessment";
-import { CollectionError, ConfigError } from "../util/HookError";
+import { errColl, errConfig } from "../util/HookError";
 
 export const WYV_KEY_OR = "$or";
 
@@ -20,14 +20,14 @@ const orWyvern: WyvPlugin<WyvParams, WyvSetup, WyvContext> = {
     ) => {
       if (!Array.isArray(params)) {
         return HookAssessor.fault(
-          new ConfigError("$or value should be an array of templates", path),
+          errConfig("$or value should be an array of templates", path),
         );
       }
 
       if (params.length === 0) {
         // OR(<no arguments>) is defined as FALSE for boolean algebra
         return HookAssessor.fault(
-          new ConfigError(`$or must take one or more predicates`, path),
+          errConfig(`$or must take one or more predicates`, path),
         );
       }
 
@@ -38,9 +38,7 @@ const orWyvern: WyvPlugin<WyvParams, WyvSetup, WyvContext> = {
         errors.include(templateErrors);
       }
 
-      return HookAssessor.fault(new CollectionError("$or", path)).include(
-        errors,
-      );
+      return HookAssessor.fault(errColl("$or", path)).include(errors);
     },
   },
 };

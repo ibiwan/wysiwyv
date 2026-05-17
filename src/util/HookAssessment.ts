@@ -1,4 +1,4 @@
-import { HookError } from "./HookError";
+import type { HookError } from "./HookError";
 
 export interface HookAssessment {
   readonly fault: (error: HookError) => HookAssessment;

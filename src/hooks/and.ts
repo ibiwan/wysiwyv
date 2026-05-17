@@ -2,7 +2,7 @@ import type { HookValue } from "../type/template";
 import type { ContextObject } from "../type/plugin";
 import type { WyvPlugin } from "../type/plugin";
 import { HookAssessor } from "../util/HookAssessment";
-import { CollectionError, ConfigError } from "../util/HookError";
+import { errColl, errConfig } from "../util/HookError";
 
 export const WYV_KEY_AND = "$and";
 
@@ -20,7 +20,7 @@ const andWyvern: WyvPlugin<WyvParams, WyvSetup, WyvContext> = {
     ) => {
       if (!Array.isArray(params)) {
         return HookAssessor.fault(
-          new ConfigError("$and value should be an array of templates", path),
+          errConfig("$and value should be an array of templates", path),
         );
       }
 
@@ -40,7 +40,7 @@ const andWyvern: WyvPlugin<WyvParams, WyvSetup, WyvContext> = {
         return HookAssessor.SUCCESS;
       }
 
-      const a = HookAssessor.fault(new CollectionError("$and", path));
+      const a = HookAssessor.fault(errColl("$and", path));
 
       const final = a.include(errors);
 

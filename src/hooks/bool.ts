@@ -1,8 +1,9 @@
 import type { HookValue } from "../type/template";
 import type { ContextObject, WyvPlugin } from "../type/plugin";
 import { HookAssessor } from "../util/HookAssessment";
-import { SpecError } from "../util/HookError";
+
 import { isBoolean } from "../util/types";
+import { errType } from "../util/HookError";
 
 export const WYV_KEY_BOOL = "$bool";
 
@@ -15,7 +16,7 @@ const boolWyvern: WyvPlugin<WyvParams, WyvSetup, WyvContext> = {
   handlers: {
     [WYV_KEY_BOOL]: (value: unknown, _expected: HookValue, { path }) => {
       if (!isBoolean(value)) {
-        return HookAssessor.fault(new SpecError("boolean", value, path));
+        return HookAssessor.fault(errType("boolean", value, path));
       }
       return HookAssessor.SUCCESS;
     },

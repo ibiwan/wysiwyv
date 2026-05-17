@@ -1,8 +1,8 @@
 import type { HookValue } from "../type/template";
 import type { ContextObject, WyvPlugin } from "../type/plugin";
 import { HookAssessor } from "../util/HookAssessment";
-import { SpecError } from "../util/HookError";
 import { isString } from "../util/types";
+import { errType } from "../util/HookError";
 
 const ncg = (s: string) => `(?:${s})`;
 const CHARS = `[a-zA-Z0-9_%+\\-]+`;
@@ -23,12 +23,10 @@ const emailWyvern: WyvPlugin<WyvParams, WyvSetup, WyvContext> = {
   handlers: {
     [WYV_KEY_EMAIL]: (value: unknown, _expected: HookValue, { path }) => {
       if (!isString(value)) {
-        return HookAssessor.fault(new SpecError("string", value, path));
+        return HookAssessor.fault(errType("string", value, path));
       }
       if (!RE_EMAIL_LOOSE.test(value)) {
-        return HookAssessor.fault(
-          new SpecError("valid email address", value, path),
-        );
+        return HookAssessor.fault(errType("valid email address", value, path));
       }
 
       return HookAssessor.SUCCESS;

@@ -1,8 +1,8 @@
 import type { HookValue } from "../type/template";
 import type { ContextObject, WyvPlugin } from "../type/plugin";
 import { HookAssessor } from "../util/HookAssessment";
-import { SpecError } from "../util/HookError";
 import { isString } from "../util/types";
+import { errType } from "../util/HookError";
 
 export const WYV_KEY_STRING = "$string";
 
@@ -15,7 +15,7 @@ const stringWyvern: WyvPlugin<WyvParams, WyvSetup, WyvContext> = {
   handlers: {
     [WYV_KEY_STRING]: (value: unknown, _expected: HookValue, { path }) => {
       if (!isString(value)) {
-        return HookAssessor.fault(new SpecError("string", value, path));
+        return HookAssessor.fault(errType("string", value, path));
       }
       return HookAssessor.SUCCESS;
     },

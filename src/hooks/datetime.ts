@@ -1,7 +1,7 @@
 import type { ContextObject, HookKey } from "../type/plugin";
 import type { WyvPlugin } from "../type/plugin";
 import { HookAssessor } from "../util/HookAssessment";
-import { SpecError } from "../util/HookError";
+import { errType } from "../util/HookError";
 import { isString } from "../util/types";
 
 const YEAR = "(?:\\d{4})"; // 0000-9999
@@ -92,19 +92,17 @@ const datetimeWyvern: WyvPlugin<WyvParams, WyvSetup, WyvContext> = {
   handlers: {
     [WYV_KEY_ISODATE]: (value: unknown, _expected, { path }) => {
       if (!checkIsoDate(value))
-        return HookAssessor.fault(new SpecError("ISO 8601 date", value, path));
+        return HookAssessor.fault(errType("ISO 8601 date", value, path));
       return HookAssessor.SUCCESS;
     },
     [WYV_KEY_BASICISODATE]: (value: unknown, _expected, { path }) => {
       if (!checkBasicIsoDate(value))
-        return HookAssessor.fault(
-          new SpecError("Basic ISO 8601 date", value, path),
-        );
+        return HookAssessor.fault(errType("Basic ISO 8601 date", value, path));
       return HookAssessor.SUCCESS;
     },
     [WYV_KEY_STRICTISODATE]: (value: unknown, _expected, { path }) => {
       if (!checkStrictIsoDate(value))
-        return HookAssessor.fault(new SpecError("RFC 3339 date", value, path));
+        return HookAssessor.fault(errType("RFC 3339 date", value, path));
       return HookAssessor.SUCCESS;
     },
   },

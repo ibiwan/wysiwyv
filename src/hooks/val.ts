@@ -1,7 +1,7 @@
 import type { HookKey } from "../type/plugin";
 import type { WyvPlugin } from "../type/plugin";
 import { HookAssessor } from "../util/HookAssessment";
-import { MatchError } from "../util/HookError";
+import { errMatch } from "../util/HookError";
 
 const WYV_KEY_VAL: HookKey = "$val";
 
@@ -32,7 +32,7 @@ const valWyvern: WyvPlugin<WyvParams, WyvSetup, WyvContext> = {
 
       if (value !== context.matches[match]) {
         return HookAssessor.fault(
-          new MatchError(context.matches[match], value, match, path),
+          errMatch(context.matches[match], value, match, path),
         );
       }
 

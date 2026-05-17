@@ -1,7 +1,7 @@
 import type { ContextObject, HookKey } from "../type/plugin";
 import type { WyvPlugin } from "../type/plugin";
 import { HookAssessor } from "../util/HookAssessment";
-import { ConfigError, SpecError } from "../util/HookError";
+import { errConfig, errType } from "../util/HookError";
 import { isEmptyObject, isNumber, isString } from "../util/types";
 
 const hex = "[0-9a-f]";
@@ -84,12 +84,12 @@ const uuidWyvern: WyvPlugin<WyvParams, WyvSetup, WyvContext> = {
 
       if (!isVersion(version)) {
         return HookAssessor.fault(
-          new ConfigError(`Unknown UUID version: '${version}'`, path),
+          errConfig(`Unknown UUID version: '${version}'`, path),
         );
       }
 
       if (!isString(value)) {
-        return HookAssessor.fault(new SpecError("string", value, path));
+        return HookAssessor.fault(errType("string", value, path));
       }
 
       if (!testByVersion(version, value)) {
@@ -97,9 +97,7 @@ const uuidWyvern: WyvPlugin<WyvParams, WyvSetup, WyvContext> = {
           isNumber(version) || isString(version)
             ? ` of version '${version}'`
             : "";
-        return HookAssessor.fault(
-          new SpecError(`UUID${subMessage}`, value, path),
-        );
+        return HookAssessor.fault(errType(`UUID${subMessage}`, value, path));
       }
       return HookAssessor.SUCCESS;
     },

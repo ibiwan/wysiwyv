@@ -8,12 +8,12 @@ import { type PluginList } from "./type/plugin";
 import { HookAssessor, type HookAssessment } from "./util/HookAssessment";
 
 import {
-  AttributeError,
-  ConfigError,
-  MissingElementError,
-  SpecError,
-  UnexpectedElementError,
-  ValueError,
+  errAttr,
+  errConfig,
+  errMissing,
+  errType,
+  errUnexpected,
+  errValue,
 } from "./util/HookError";
 
 import { getHookKey, getHookParams } from "./util/parseHook";
@@ -86,7 +86,7 @@ export const makeCore = (hooks: PluginList, pluginSetups: MultiContext) => {
         return expectObject(expected, candidate, path);
       default:
         return HookAssessor.fault(
-          new ConfigError(
+          errConfig(
             `Unsupported value type in expected object: '${repr(expected)}'`,
             path,
           ),
@@ -100,11 +100,11 @@ export const makeCore = (hooks: PluginList, pluginSetups: MultiContext) => {
     path: string,
   ): HookAssessment => {
     if (typeof candidate !== "string") {
-      return HookAssessor.fault(new SpecError("string", candidate, path));
+      return HookAssessor.fault(errType("string", candidate, path));
     }
 
     if (candidate !== expected) {
-      return HookAssessor.fault(new ValueError(expected, candidate, path));
+      return HookAssessor.fault(errValue(expected, candidate, path));
     }
 
     return HookAssessor.SUCCESS;
@@ -116,11 +116,11 @@ export const makeCore = (hooks: PluginList, pluginSetups: MultiContext) => {
     path: string,
   ): HookAssessment => {
     if (typeof candidate !== "number") {
-      return HookAssessor.fault(new SpecError("number", candidate, path));
+      return HookAssessor.fault(errType("number", candidate, path));
     }
 
     if (candidate !== expected) {
-      return HookAssessor.fault(new ValueError(expected, candidate, path));
+      return HookAssessor.fault(errValue(expected, candidate, path));
     }
 
     return HookAssessor.SUCCESS;
@@ -132,10 +132,10 @@ export const makeCore = (hooks: PluginList, pluginSetups: MultiContext) => {
     path: string,
   ): HookAssessment => {
     if (typeof candidate !== "boolean") {
-      return HookAssessor.fault(new SpecError("boolean", candidate, path));
+      return HookAssessor.fault(errType("boolean", candidate, path));
     }
     if (candidate !== expected) {
-      return HookAssessor.fault(new ValueError(expected, candidate, path));
+      return HookAssessor.fault(errValue(expected, candidate, path));
     }
 
     return HookAssessor.SUCCESS;
@@ -143,7 +143,7 @@ export const makeCore = (hooks: PluginList, pluginSetups: MultiContext) => {
 
   const expectNull = (candidate: unknown, path: string): HookAssessment => {
     if (candidate !== null) {
-      return HookAssessor.fault(new SpecError("null", candidate, path));
+      return HookAssessor.fault(errType("null", candidate, path));
     }
 
     return HookAssessor.SUCCESS;
@@ -155,27 +155,20 @@ export const makeCore = (hooks: PluginList, pluginSetups: MultiContext) => {
     path: string,
   ): HookAssessment => {
     if (!isArray(candidate)) {
-      return HookAssessor.fault(new SpecError("array", candidate, path));
+      return HookAssessor.fault(errType("array", candidate, path));
     }
 
     const errors = HookAssessor.start();
 
     if (candidate.length !== expected.length) {
       errors.fault(
-        new AttributeError(
-          "Array length",
-          expected.length,
-          candidate.length,
-          path,
-        ),
+        errAttr("Array length", expected.length, candidate.length, path),
       );
     }
 
     for (let i = 0; i < expected.length; i++) {
       if (isUndefined(candidate[i])) {
-        errors.fault(
-          new MissingElementError(`index ${i}`, expected[i], `${path}[${i}]`),
-        );
+        errors.fault(errMissing(`index ${i}`, expected[i], `${path}[${i}]`));
         continue;
       }
 
@@ -197,7 +190,7 @@ export const makeCore = (hooks: PluginList, pluginSetups: MultiContext) => {
     path: string,
   ): HookAssessment => {
     if (!isPlainObject(candidate)) {
-      return HookAssessor.fault(new SpecError("object", candidate, path));
+      return HookAssessor.fault(errType("object", candidate, path));
     }
 
     const errors = HookAssessor.start();
@@ -208,13 +201,11 @@ export const makeCore = (hooks: PluginList, pluginSetups: MultiContext) => {
     const extraKeys = candidateKeys.filter((k) => !expectedKeys.includes(k));
 
     missingKeys.forEach((k) => {
-      errors.fault(
-        new MissingElementError(`${k}`, expected[k], `${path}.${k}`),
-      );
+      errors.fault(errMissing(`${k}`, expected[k], `${path}.${k}`));
     });
 
     extraKeys.forEach((k) => {
-      errors.fault(new UnexpectedElementError(k, candidate[k], `${path}.${k}`));
+      errors.fault(errUnexpected(k, candidate[k], `${path}.${k}`));
     });
 
     for (const key in expected) {

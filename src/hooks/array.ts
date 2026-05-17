@@ -1,7 +1,7 @@
 import type { ContextObject } from "../type/plugin";
 import type { WyvPlugin } from "../type/plugin";
 import { HookAssessor } from "../util/HookAssessment";
-import { AttributeError, ConfigError, SpecError } from "../util/HookError";
+import { errAttr, errConfig, errType } from "../util/HookError";
 import { isArray, isDefined, isNumber, isObject, notNull } from "../util/types";
 
 export const WYV_KEY_ARRAY = "$array";
@@ -24,7 +24,7 @@ const arrayWyvern: WyvPlugin<WyvParams, WyvSetup, WyvContext> = {
   handlers: {
     [WYV_KEY_ARRAY]: (value, _expected, { path, params, evaluate }) => {
       if (!isArray(value)) {
-        return HookAssessor.fault(new SpecError("array", value, path));
+        return HookAssessor.fault(errType("array", value, path));
       }
 
       const errors = HookAssessor.start();
@@ -45,7 +45,7 @@ const arrayWyvern: WyvPlugin<WyvParams, WyvSetup, WyvContext> = {
 
       if (isParametric && Object.keys(rest).length > 0) {
         errors.fault(
-          new ConfigError(
+          errConfig(
             `Ignored unknown $array parameters: '${Object.keys(rest)}'`,
             path,
           ),
@@ -60,7 +60,7 @@ const arrayWyvern: WyvPlugin<WyvParams, WyvSetup, WyvContext> = {
 
       if (isDefined(length) && value.length !== length) {
         errors.fault(
-          new AttributeError(
+          errAttr(
             WYV_KEY_ARRAY + "." + WYV_ARRAY_PARAM_LENGTH,
             length,
             value.length,
@@ -75,7 +75,7 @@ const arrayWyvern: WyvPlugin<WyvParams, WyvSetup, WyvContext> = {
         value.length < minLength
       ) {
         errors.fault(
-          new AttributeError(
+          errAttr(
             WYV_KEY_ARRAY + "." + WYV_ARRAY_PARAM_MINLENGTH,
             minLength,
             value.length,
@@ -90,7 +90,7 @@ const arrayWyvern: WyvPlugin<WyvParams, WyvSetup, WyvContext> = {
         value.length > maxLength
       ) {
         errors.fault(
-          new AttributeError(
+          errAttr(
             WYV_KEY_ARRAY + "." + WYV_ARRAY_PARAM_MAXLENGTH,
             maxLength,
             value.length,

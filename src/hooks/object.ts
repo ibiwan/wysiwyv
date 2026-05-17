@@ -3,7 +3,7 @@ import type { HookValue } from "../type/template";
 import type { ContextObject, HookEnviron } from "../type/plugin";
 import type { WyvPlugin } from "../type/plugin";
 import { HookAssessor, type HookAssessment } from "../util/HookAssessment";
-import { ConfigError, MissingElementError, SpecError } from "../util/HookError";
+import { errConfig, errMissing, errType } from "../util/HookError";
 import { isDefined, isObject, isPlainObject } from "../util/types";
 
 export const WYV_KEY_OBJECT = "$object";
@@ -25,13 +25,13 @@ const validatePartial = (
   const errors = HookAssessor.start();
   if (!isPlainObject($partial)) {
     errors.fault(
-      new ConfigError("$object.$partial option should be an object", path),
+      errConfig("$object.$partial option should be an object", path),
     );
   } else {
     for (const expectedKey in $partial) {
       if (!(expectedKey in value)) {
         errors.fault(
-          new MissingElementError(
+          errMissing(
             expectedKey,
             $partial[expectedKey],
             `${path}.${expectedKey}`,
@@ -81,11 +81,11 @@ const validateObject =
   ) => {
     if (plainOnly) {
       if (!isPlainObject(value)) {
-        return HookAssessor.fault(new SpecError("plainobject", value, path));
+        return HookAssessor.fault(errType("plainobject", value, path));
       }
     } else {
       if (!isObject(value)) {
-        return HookAssessor.fault(new SpecError("object", value, path));
+        return HookAssessor.fault(errType("object", value, path));
       }
     }
 
@@ -99,16 +99,13 @@ const validateObject =
 
     if (Object.keys(rest).length > 0) {
       errors.fault(
-        new ConfigError(
-          `Unexpected $object parameters: ${Object.keys(rest)}`,
-          path,
-        ),
+        errConfig(`Unexpected $object parameters: ${Object.keys(rest)}`, path),
       );
     }
 
     if (isDefined($partial) && isDefined($eachElement)) {
       errors.fault(
-        new ConfigError(
+        errConfig(
           "$object options can specify $partial or $eachElement but not both",
           path,
         ),
@@ -118,7 +115,7 @@ const validateObject =
 
     if (isDefined($partial)) {
       if (!isPlainObject(value)) {
-        errors.fault(new SpecError("plainobject for $partial", value, path));
+        errors.fault(errType("plainobject for $partial", value, path));
       } else {
         const entireErrors = validatePartial($partial, value, path, evaluate);
         errors.include(entireErrors);
@@ -127,9 +124,7 @@ const validateObject =
 
     if (isDefined($eachElement)) {
       if (!isPlainObject(value)) {
-        errors.fault(
-          new SpecError("plainobject for $eachElement", value, path),
-        );
+        errors.fault(errType("plainobject for $eachElement", value, path));
       } else {
         const eachErrors = validateEachElement(
           $eachElement,
