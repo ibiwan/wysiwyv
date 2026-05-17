@@ -1,6 +1,6 @@
 import type { HookValue } from "../type/template";
 import type { HookKey } from "../type/plugin";
-import { isObject, isPlainObject, isString } from "./types";
+import { isPlainObject, isString } from "./types";
 
 export const getHookKey = (val: HookValue): HookKey | null => {
   if (isString(val)) {
@@ -9,7 +9,7 @@ export const getHookKey = (val: HookValue): HookKey | null => {
     }
   }
 
-  if (isObject(val) && Object.keys(val).length === 1) {
+  if (isPlainObject(val) && Object.keys(val).length === 1) {
     const key = Object.keys(val)[0] as string;
 
     if (key.startsWith("$") && !key.startsWith("$$")) {

@@ -40,7 +40,7 @@ export const makeCore = (hooks: PluginList, pluginSetups: MultiContext) => {
     if (!key) return expectNormal(expected, candidate, path);
 
     const hookSetup = perHookSetups[key] ?? ({} as HookObject);
-    if (perHookContexts[key] == undefined) {
+    if (perHookContexts[key] === undefined) {
       perHookContexts[key] = {};
     }
 

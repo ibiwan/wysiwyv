@@ -28,7 +28,3 @@ export const repr = (val: unknown) => {
   }
   return [label, str].filter((s) => s).join(" ");
 };
-
-export const d = (val: unknown) => {
-  console.log(repr(val));
-};

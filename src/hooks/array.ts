@@ -1,4 +1,4 @@
-import type { HookEnviron } from "../type/plugin";
+import type { ContextObject } from "../type/plugin";
 import type { WyvPlugin } from "../type/plugin";
 import { HookAssessor } from "../util/HookAssessment";
 import { AttributeError, ConfigError, SpecError } from "../util/HookError";
@@ -10,23 +10,19 @@ export const WYV_ARRAY_PARAM_MINLENGTH = "$minlength";
 export const WYV_ARRAY_PARAM_MAXLENGTH = "$maxlength";
 export const WYV_ARRAY_PARAM_EACH = "$each";
 
-type WyvParamsArray = {
+type WyvParams = {
   [WYV_ARRAY_PARAM_LENGTH]?: number;
   [WYV_ARRAY_PARAM_MINLENGTH]?: number;
   [WYV_ARRAY_PARAM_MAXLENGTH]?: number;
   [WYV_ARRAY_PARAM_EACH]?: unknown;
 };
-type WyvSetupArray = object;
-type WyvContextArray = HookEnviron<WyvParamsArray>;
+type WyvSetup = unknown;
+type WyvContext = ContextObject;
 
-const arrayWyvern: WyvPlugin<WyvParamsArray, WyvSetupArray, WyvContextArray> = {
+const arrayWyvern: WyvPlugin<WyvParams, WyvSetup, WyvContext> = {
   handles: (value) => [WYV_KEY_ARRAY].includes(value),
   handlers: {
-    [WYV_KEY_ARRAY]: (
-      value,
-      _expected,
-      { path, params, evaluate }: WyvContextArray,
-    ) => {
+    [WYV_KEY_ARRAY]: (value, _expected, { path, params, evaluate }) => {
       if (!isArray(value)) {
         return HookAssessor.fault(new SpecError("array", value, path));
       }

@@ -33,7 +33,7 @@ export type HookHandler<
 ) => HookAssessment;
 
 // second string forces at least one character after the initial dollar sign.
-// may not work in all typescript implementations.
+// may not work in all typescript implementations, those will accept '$'
 export type HookKey = `$${string}${string}`;
 
 export type WyvPlugin<

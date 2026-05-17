@@ -1,5 +1,6 @@
 import { test, expect, spyOn } from "bun:test";
-import { d } from "../src/util/stringify";
+import { d } from "../dev-util";
+
 const dt = new Date();
 const REPRS = [
   { val: null, expected: "null" },

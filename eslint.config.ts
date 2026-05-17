@@ -9,17 +9,18 @@ export default defineConfig([
     plugins: { js },
     extends: ["js/recommended"],
     languageOptions: { globals: { ...globals.browser, ...globals.node } },
+    ignores: ["dist/**"],
   },
   tseslint.configs.recommended,
   {
     rules: {
-      "@typescript-eslint/no-unused-vars":
-        [
-          "error", {
-            "argsIgnorePattern": "^_",
-            "varsIgnorePattern": "^_",
-          }
-        ],
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+        },
+      ],
     },
   },
 ]);

@@ -1,4 +1,4 @@
-import type { HookKey } from "../type/plugin";
+import type { ContextObject, HookKey } from "../type/plugin";
 import type { WyvPlugin } from "../type/plugin";
 import { HookAssessor } from "../util/HookAssessment";
 import { ConfigError, SpecError } from "../util/HookError";
@@ -72,7 +72,11 @@ const testByVersion = (version: Version, value: string) => {
   }
 };
 
-const uuidWyvern: WyvPlugin = {
+type WyvParams = unknown;
+type WyvSetup = unknown;
+type WyvContext = ContextObject;
+
+const uuidWyvern: WyvPlugin<WyvParams, WyvSetup, WyvContext> = {
   handles: (value) => [WYV_KEY_UUID].includes(value),
   handlers: {
     $uuid: (value: unknown, _expected, { path, params }) => {

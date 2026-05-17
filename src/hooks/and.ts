@@ -1,27 +1,32 @@
 import type { HookValue } from "../type/template";
-import type { HookEnviron } from "../type/plugin";
+import type { ContextObject } from "../type/plugin";
 import type { WyvPlugin } from "../type/plugin";
 import { HookAssessor } from "../util/HookAssessment";
 import { CollectionError, ConfigError } from "../util/HookError";
 
 export const WYV_KEY_AND = "$and";
 
-type WyvParamsAnd = HookValue[];
-type WyvSetupAnd = object;
-type WyvContextAnd = HookEnviron<WyvParamsAnd>;
+type WyvParams = HookValue[];
+type WyvSetup = unknown;
+type WyvContext = ContextObject;
 
-const andWyvern: WyvPlugin<WyvParamsAnd, WyvSetupAnd, WyvContextAnd> = {
+const andWyvern: WyvPlugin<WyvParams, WyvSetup, WyvContext> = {
   handles: (value) => [WYV_KEY_AND].includes(value),
   handlers: {
     [WYV_KEY_AND]: (
       value: unknown,
       _expected: HookValue,
-      { path, params, evaluate }: WyvContextAnd,
+      { path, params, evaluate },
     ) => {
       if (!Array.isArray(params)) {
         return HookAssessor.fault(
           new ConfigError("$and value should be an array of templates", path),
         );
+      }
+
+      if (params.length === 0) {
+        // AND(<no arguments>) is defined as TRUE for boolean algebra
+        return HookAssessor.SUCCESS;
       }
 
       const errors = HookAssessor.start();

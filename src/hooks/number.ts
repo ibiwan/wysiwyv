@@ -1,4 +1,4 @@
-import type { HookEnviron } from "../type/plugin";
+import type { ContextObject } from "../type/plugin";
 import type { HookKey } from "../type/plugin";
 import type { WyvPlugin } from "../type/plugin";
 import { HookAssessor } from "../util/HookAssessment";
@@ -7,27 +7,19 @@ import { isDefined, isNumber, isObject } from "../util/types";
 
 export const WYV_KEY_NUMBER: HookKey = "$number";
 
-type WyvParamsNumber = {
+type WyvParams = {
   $min?: number;
   $max?: number;
   $gt?: number;
   $lt?: number;
 };
-type WyvSetupNumber = object;
-type WyvContextNumber = HookEnviron<WyvParamsNumber>;
+type WyvSetup = unknown;
+type WyvContext = ContextObject;
 
-const numberWyvern: WyvPlugin<
-  WyvParamsNumber,
-  WyvSetupNumber,
-  WyvContextNumber
-> = {
+const numberWyvern: WyvPlugin<WyvParams, WyvSetup, WyvContext> = {
   handles: (value) => [WYV_KEY_NUMBER].includes(value),
   handlers: {
-    [WYV_KEY_NUMBER]: (
-      value: unknown,
-      _expected,
-      { path, params }: WyvContextNumber,
-    ) => {
+    [WYV_KEY_NUMBER]: (value: unknown, _expected, { path, params }) => {
       if (!isNumber(value)) {
         return HookAssessor.fault(new SpecError("number", value, path));
       }

@@ -1,6 +1,6 @@
 import type { WysiwyvEvaluatorFunction } from "../type/engine";
 import type { HookValue } from "../type/template";
-import type { HookEnviron } from "../type/plugin";
+import type { ContextObject, HookEnviron } from "../type/plugin";
 import type { WyvPlugin } from "../type/plugin";
 import { HookAssessor, type HookAssessment } from "../util/HookAssessment";
 import { ConfigError, MissingElementError, SpecError } from "../util/HookError";
@@ -9,12 +9,12 @@ import { isDefined, isObject, isPlainObject } from "../util/types";
 export const WYV_KEY_OBJECT = "$object";
 export const WYV_KEY_PLAINOBJECT = "$plainobject";
 
-type WyvParamsObject = {
+type WyvParams = {
   $partial?: HookValue;
   $eachElement?: HookValue;
 };
-type WyvSetupObject = object;
-type WyvContextObject = HookEnviron<WyvParamsObject>;
+type WyvSetup = unknown;
+type WyvContext = ContextObject;
 
 const validatePartial = (
   $partial: HookValue,
@@ -53,7 +53,7 @@ const validatePartial = (
   return errors;
 };
 
-const validateeachElement = (
+const validateEachElement = (
   $eachElement: HookValue,
   value: Record<string, unknown>,
   path: string,
@@ -77,7 +77,7 @@ const validateObject =
   (
     value: unknown,
     _expected: HookValue,
-    { path, params, evaluate }: WyvContextObject,
+    { path, params, evaluate }: HookEnviron<WyvParams, WyvSetup, WyvContext>,
   ) => {
     if (plainOnly) {
       if (!isPlainObject(value)) {
@@ -131,7 +131,7 @@ const validateObject =
           new SpecError("plainobject for $eachElement", value, path),
         );
       } else {
-        const eachErrors = validateeachElement(
+        const eachErrors = validateEachElement(
           $eachElement,
           value,
           path,
@@ -144,11 +144,7 @@ const validateObject =
     return errors;
   };
 
-const objectWyvern: WyvPlugin<
-  WyvParamsObject,
-  WyvSetupObject,
-  WyvContextObject
-> = {
+const objectWyvern: WyvPlugin<WyvParams, WyvSetup, WyvContext> = {
   handles: (value) => [WYV_KEY_OBJECT, WYV_KEY_PLAINOBJECT].includes(value),
   handlers: {
     [WYV_KEY_OBJECT]: validateObject(false),

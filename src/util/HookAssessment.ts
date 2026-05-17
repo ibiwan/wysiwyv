@@ -7,6 +7,26 @@ export interface HookAssessment {
   readonly success: boolean;
 }
 
+const EMPTY_ERRORS = Object.freeze([]) as readonly HookError[];
+
+const SUCCESS: HookAssessment = {
+  get success() {
+    return true;
+  },
+
+  get errors() {
+    return EMPTY_ERRORS;
+  },
+
+  fault(error: HookError): HookAssessment {
+    return start().fault(error);
+  },
+
+  include(newAssessment: HookAssessment): HookAssessment {
+    return newAssessment;
+  },
+};
+
 const start = (errors: readonly HookError[] = []): HookAssessment => {
   const _errors: HookError[] = [...errors];
 
@@ -32,10 +52,6 @@ const start = (errors: readonly HookError[] = []): HookAssessment => {
 
   return assessment;
 };
-
-const SUCCESS = start();
-Object.freeze(SUCCESS.errors);
-Object.freeze(SUCCESS);
 
 const fault = (error: HookError) => start().fault(error);
 

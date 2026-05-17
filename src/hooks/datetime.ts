@@ -1,4 +1,4 @@
-import type { HookKey } from "../type/plugin";
+import type { ContextObject, HookKey } from "../type/plugin";
 import type { WyvPlugin } from "../type/plugin";
 import { HookAssessor } from "../util/HookAssessment";
 import { SpecError } from "../util/HookError";
@@ -51,7 +51,6 @@ export const WYV_KEY_BASICISODATE: HookKey = "$basicisodate";
 export const WYV_KEY_STRICTISODATE: HookKey = "$strictisodate";
 
 const checkParsedDate = (value: string): boolean => {
-  if (typeof value !== "string") return false;
   const date = new Date(value);
   return !Number.isNaN(date.getTime());
 };
@@ -81,7 +80,11 @@ const checkStrictIsoDate = (value: unknown): boolean => {
   return checkParsedDate(value);
 };
 
-const datetimeWyvern: WyvPlugin = {
+type WyvParams = unknown;
+type WyvSetup = unknown;
+type WyvContext = ContextObject;
+
+const datetimeWyvern: WyvPlugin<WyvParams, WyvSetup, WyvContext> = {
   handles: (value) =>
     [WYV_KEY_ISODATE, WYV_KEY_BASICISODATE, WYV_KEY_STRICTISODATE].includes(
       value,
