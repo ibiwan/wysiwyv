@@ -1,5 +1,6 @@
 import type { WysiwyvInstance } from "../src/type/engine";
 import { makeWysiwyv } from "../src/wysiwyv";
+import { assertErrors, assertSuccess } from "../test-util";
 
 describe("Empty Expected JSON Object", () => {
   let wyv: WysiwyvInstance;
@@ -13,14 +14,15 @@ describe("Empty Expected JSON Object", () => {
     const expected = {};
     const candidate = {};
     const result = wyv.validate(expected, candidate);
-    expect(result.success).toBe(true);
+    assertSuccess(result);
+    assertSuccess(result);
   });
 
   it("should fail when candidate has properties", () => {
     const expected = {};
     const candidate = { badKey: "badValue" };
     const result = wyv.validate(expected, candidate);
-    expect(result.errors).toEqual([
+    assertErrors(result, [
       {
         message: "Unexpected element at 'badKey': got 'badValue'",
         path: ".badKey",

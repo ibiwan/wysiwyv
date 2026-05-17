@@ -1,5 +1,6 @@
 import type { HookValue } from "../src/type/template";
 import { makeWysiwyv } from "../src/wysiwyv";
+import { assertErrors } from "../test-util";
 
 describe("invalid core configurations", () => {
   it("rejects unknown types", () => {
@@ -8,6 +9,7 @@ describe("invalid core configurations", () => {
       aSymbol: Symbol("a symbol"),
       aBigInt: 100n,
     };
+
     const candidate = {
       anUndefined: "",
       aSymbol: "",
@@ -17,7 +19,7 @@ describe("invalid core configurations", () => {
     const wyv = makeWysiwyv();
     const result = wyv.validate(expected as unknown as HookValue, candidate);
 
-    expect(result.errors).toEqual([
+    assertErrors(result, [
       {
         message:
           "Configuration Error: Unsupported value type in expected object: 'undefined'",

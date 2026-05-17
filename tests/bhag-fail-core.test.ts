@@ -1,5 +1,6 @@
 import type { HookValue } from "../src/type/template";
 import { makeWysiwyv } from "../src/wysiwyv";
+import { assertErrors } from "../test-util";
 
 describe("big hairy core template rejects big hairy data", () => {
   const data = {
@@ -36,7 +37,8 @@ describe("big hairy core template rejects big hairy data", () => {
   it("rejects a lot", () => {
     const wyv = makeWysiwyv();
     const result = wyv.validate(template, data);
-    expect(result.errors).toEqual([
+
+    assertErrors(result, [
       {
         message:
           "Configuration Error: Unsupported value type in expected object: 'ReadableStream {}'",

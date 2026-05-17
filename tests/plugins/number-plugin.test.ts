@@ -1,6 +1,7 @@
 import type { HookValue } from "../../src/type/template";
 import type { WysiwyvInstance } from "../../src/type/engine";
 import { makeWysiwyv } from "../../src/wysiwyv";
+import { assertErrors, assertSuccess } from "../../test-util";
 
 describe("Number Type Plugin", () => {
   let wyv: WysiwyvInstance;
@@ -27,10 +28,12 @@ describe("Number Type Plugin", () => {
   ];
   test.each(NUMS)("validates number %d", (value) => {
     const expected = { num: "$number" };
+
     const candidate = { num: value };
 
     const result = wyv.validate(expected, candidate);
-    expect(result.success).toBe(true);
+
+    assertSuccess(result);
   });
 
   const NOT_NUMS = [
@@ -49,11 +52,14 @@ describe("Number Type Plugin", () => {
   ];
   test.each(NOT_NUMS)("rejects non-num $repr", (datum) => {
     const { value, repr } = datum;
+
     const expected = { num: "$number" };
+
     const candidate = { num: value };
+
     const result = wyv.validate(expected, candidate);
 
-    expect(result.errors).toEqual([
+    assertErrors(result, [
       {
         message: `Type: Expected 'number', got value '${repr}'`,
         path: ".num",
@@ -145,8 +151,11 @@ describe("Number Type Plugin", () => {
   ];
   test.each(NUM_PREDICATES)("Number max/min: $label", (row) => {
     const { val, predicate, succeed, errorString } = row;
+
     const expected = { num: { $number: predicate } };
+
     const candidate = { num: val };
+
     const errorStrings = Array.isArray(errorString)
       ? errorString
       : [errorString];
@@ -154,7 +163,7 @@ describe("Number Type Plugin", () => {
     const result = wyv.validate(expected, candidate);
 
     if (succeed) {
-      expect(result.success).toBe(true);
+      assertSuccess(result);
     } else {
       expect(result.errors).toEqual(
         errorStrings.map((s) => ({

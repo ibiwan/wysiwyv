@@ -1,5 +1,6 @@
 import type { HookValue } from "../src/type/template";
 import { makeWysiwyv } from "../src/wysiwyv";
+import { assertSuccess } from "../test-util";
 
 describe("big hairy template matches big hairy data", () => {
   const data: HookValue = {
@@ -154,6 +155,6 @@ describe("big hairy template matches big hairy data", () => {
   it("matches", () => {
     const wyv = makeWysiwyv();
     const result = wyv.validate(template, data);
-    expect(result.errors).toEqual([]);
+    assertSuccess(result);
   });
 });

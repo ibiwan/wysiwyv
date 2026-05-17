@@ -1,6 +1,7 @@
 import type { HookValue } from "../../src/type/template";
 import type { WysiwyvInstance } from "../../src/type/engine";
 import { makeWysiwyv } from "../../src/wysiwyv";
+import { assertErrors, assertSuccess } from "../../test-util";
 
 describe("Object Type Plugin", () => {
   let wyv: WysiwyvInstance;
@@ -10,6 +11,7 @@ describe("Object Type Plugin", () => {
   });
 
   const aDate = new Date();
+
   const aDateString = aDate.toISOString();
 
   const OBJECTS: {
@@ -82,13 +84,15 @@ describe("Object Type Plugin", () => {
     const { val, repr, isPlainObject } = row;
 
     const expected = { obj: "$plainobject" };
+
     const candidate = { obj: val };
+
     const result = wyv.validate(expected, candidate);
 
     if (isPlainObject) {
-      expect(result.success).toBe(true);
+      assertSuccess(result);
     } else {
-      expect(result.errors).toEqual([
+      assertErrors(result, [
         {
           message: `Type: Expected 'plainobject', got value '${repr}'`,
           path: ".obj",
@@ -101,13 +105,15 @@ describe("Object Type Plugin", () => {
     const { val, repr, isFullObject } = row;
 
     const expected = { obj: "$object" };
+
     const candidate = { obj: val };
+
     const result = wyv.validate(expected, candidate);
 
     if (isFullObject) {
-      expect(result.success).toBe(true);
+      assertSuccess(result);
     } else {
-      expect(result.errors).toEqual([
+      assertErrors(result, [
         {
           message: `Type: Expected 'object', got value '${repr}'`,
           path: ".obj",
@@ -121,9 +127,10 @@ describe("Object Type Plugin", () => {
       obj: { $object: { $partial: { a: "b", c: "d" } } },
     };
     const candidate = { obj: { a: "b", c: "d", e: "f" } };
+
     const result = wyv.validate(expected, candidate);
 
-    expect(result.success).toBe(true);
+    assertSuccess(result);
   });
 
   it("validates expected $partial is reasonable", () => {
@@ -131,9 +138,10 @@ describe("Object Type Plugin", () => {
       obj: { $object: { $partial: "not an object" } },
     };
     const candidate = { obj: { a: "b", c: "d", e: "f" } };
+
     const result = wyv.validate(expected, candidate);
 
-    expect(result.errors).toEqual([
+    assertErrors(result, [
       {
         message:
           "Configuration Error: $object.$partial option should be an object",
@@ -147,9 +155,10 @@ describe("Object Type Plugin", () => {
       obj: { $object: { $partial: {} } },
     };
     const candidate = { obj: new Map() };
+
     const result = wyv.validate(expected as unknown as HookValue, candidate);
 
-    expect(result.errors).toEqual([
+    assertErrors(result, [
       {
         message:
           "Type: Expected 'plainobject for $partial', got value 'Map {}'",
@@ -163,9 +172,10 @@ describe("Object Type Plugin", () => {
       obj: { $object: { $eachElement: {} } },
     };
     const candidate = { obj: new Map() };
+
     const result = wyv.validate(expected as unknown as HookValue, candidate);
 
-    expect(result.errors).toEqual([
+    assertErrors(result, [
       {
         message:
           "Type: Expected 'plainobject for $eachElement', got value 'Map {}'",
@@ -179,9 +189,10 @@ describe("Object Type Plugin", () => {
       obj: { $object: { $reverseObject: "no idea", $arrayLength: 2 } },
     };
     const candidate = { obj: { a: "b", c: "d", e: "f" } };
+
     const result = wyv.validate(expected, candidate);
 
-    expect(result.errors).toEqual([
+    assertErrors(result, [
       {
         message:
           "Configuration Error: Unexpected $object parameters: $reverseObject,$arrayLength",
@@ -195,9 +206,10 @@ describe("Object Type Plugin", () => {
       obj: { $object: { $partial: "no idea", $eachElement: 2 } },
     };
     const candidate = { obj: { a: "b", c: "d", e: "f" } };
+
     const result = wyv.validate(expected, candidate);
 
-    expect(result.errors).toEqual([
+    assertErrors(result, [
       {
         message:
           "Configuration Error: $object options can specify $partial or $eachElement but not both",
@@ -211,9 +223,10 @@ describe("Object Type Plugin", () => {
       obj: { $object: { $partial: { a: "b", c: "d" } } },
     };
     const candidate = { obj: { a: "b" } };
+
     const result = wyv.validate(expected, candidate);
 
-    expect(result.errors).toEqual([
+    assertErrors(result, [
       {
         message: "Missing element at 'c': expected 'd'",
         path: ".obj.c",
@@ -230,9 +243,10 @@ describe("Object Type Plugin", () => {
       },
     };
     const candidate = { obj: { a: "b", c: "d", e: "f" } };
+
     const result = wyv.validate(expected, candidate);
 
-    expect(result.success).toBe(true);
+    assertSuccess(result);
   });
 
   it("checks each value of an object, string, rejects", () => {
@@ -244,9 +258,10 @@ describe("Object Type Plugin", () => {
       },
     };
     const candidate = { obj: { a: "b", c: 3, e: "f" } };
+
     const result = wyv.validate(expected, candidate);
 
-    expect(result.errors).toEqual([
+    assertErrors(result, [
       { message: "Type: Expected 'string', got value '3'", path: ".obj.c" },
     ]);
   });
@@ -260,8 +275,10 @@ describe("Object Type Plugin", () => {
       },
     };
     const candidate = { obj: { a: [1, 2], b: ["a", "b"], q: [true, false] } };
+
     const result = wyv.validate(expected, candidate);
-    expect(result.success).toBe(true);
+
+    assertSuccess(result);
   });
 
   it("checks each value of an object, nested, rejects", () => {
@@ -273,8 +290,10 @@ describe("Object Type Plugin", () => {
       },
     };
     const candidate = { obj: { a: [1, 2], b: "abcdef", q: [true, false] } };
+
     const result = wyv.validate(expected, candidate);
-    expect(result.errors).toEqual([
+
+    assertErrors(result, [
       {
         message: "Type: Expected 'array', got value 'abcdef'",
         path: ".obj.b",

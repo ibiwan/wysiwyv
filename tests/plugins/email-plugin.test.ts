@@ -1,5 +1,6 @@
 import type { WysiwyvInstance } from "../../src/type/engine";
 import { makeWysiwyv } from "../../src/wysiwyv";
+import { assertErrors, assertSuccess } from "../../test-util";
 
 const GOOD_EMAILS = [
   "simple@example.com",
@@ -33,15 +34,21 @@ describe("Email Expected JSON Object", () => {
   });
   test.each(GOOD_EMAILS)("validates good email %s", (email) => {
     const expected = { e: "$email" };
+
     const candidate = { e: email };
+
     const result = wyv.validate(expected, candidate);
-    expect(result.success).toBe(true);
+
+    assertSuccess(result);
   });
   test.each(BAD_EMAILS)("rejects bad email %s", (email) => {
     const expected = { e: "$email" };
+
     const candidate = { e: email };
+
     const result = wyv.validate(expected, candidate);
-    expect(result.errors).toEqual([
+
+    assertErrors(result, [
       {
         message: `Type: Expected 'valid email address', got value '${email}'`,
         path: ".e",
@@ -50,9 +57,12 @@ describe("Email Expected JSON Object", () => {
   });
   it("rejects non-string email", () => {
     const expected = { e: "$email" };
+
     const candidate = { e: 12345 };
+
     const result = wyv.validate(expected, candidate);
-    expect(result.errors).toEqual([
+
+    assertErrors(result, [
       {
         message: `Type: Expected 'string', got value '12345'`,
         path: ".e",

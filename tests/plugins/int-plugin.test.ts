@@ -1,6 +1,7 @@
 import type { HookValue } from "../../src/type/template";
 import type { WysiwyvInstance } from "../../src/type/engine";
 import { makeWysiwyv } from "../../src/wysiwyv";
+import { assertErrors, assertSuccess } from "../../test-util";
 
 describe("Int Type Plugin", () => {
   let wyv: WysiwyvInstance;
@@ -23,10 +24,12 @@ describe("Int Type Plugin", () => {
   ];
   test.each(INTS)("validates int %d", (value) => {
     const expected = { int: "$int" };
+
     const candidate = { int: value };
 
     const result = wyv.validate(expected, candidate);
-    expect(result.success).toBe(true);
+
+    assertSuccess(result);
   });
 
   const NOT_INTS = [
@@ -50,11 +53,14 @@ describe("Int Type Plugin", () => {
   ];
   test.each(NOT_INTS)("rejects nonint $repr", (datum) => {
     const { value, repr } = datum;
+
     const expected = { int: "$int" };
+
     const candidate = { int: value };
+
     const result = wyv.validate(expected, candidate);
 
-    expect(result.errors).toEqual([
+    assertErrors(result, [
       {
         message: `Type: Expected 'integer', got value '${repr}'`,
         path: ".int",
@@ -120,8 +126,11 @@ describe("Int Type Plugin", () => {
   ];
   test.each(INT_PREDICATES)("Int max/min: $label", (row) => {
     const { val, predicate, succeed, errorString } = row;
+
     const expected = { int: { $int: predicate } };
+
     const candidate = { int: val };
+
     const errorStrings = Array.isArray(errorString)
       ? errorString
       : [errorString];

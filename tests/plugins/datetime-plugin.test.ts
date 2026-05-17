@@ -1,5 +1,6 @@
 import type { WysiwyvInstance } from "../../src/type/engine";
 import { makeWysiwyv } from "../../src/wysiwyv";
+import { assertErrors, assertSuccess } from "../../test-util";
 
 const SAMPLES = [
   { value: "2020-12-09 16:09:53Z", ext: false, bas: false, strict: true },
@@ -35,11 +36,12 @@ describe("DateTime Expected JSON Object", () => {
     const candidate = { dt: value };
 
     const expectedIsoExt = { dt: "$isodate" };
+
     const resultIsoExt = wyv.validate(expectedIsoExt, candidate);
     if (ext) {
-      expect(resultIsoExt.success).toBe(true);
+      assertSuccess(resultIsoExt);
     } else {
-      expect(resultIsoExt.errors).toEqual([
+      assertErrors(resultIsoExt, [
         {
           message: `Type: Expected 'ISO 8601 date', got value '${value}'`,
           path: ".dt",
@@ -48,11 +50,12 @@ describe("DateTime Expected JSON Object", () => {
     }
 
     const expectedIsoBas = { dt: "$basicisodate" };
+
     const resultIsoBas = wyv.validate(expectedIsoBas, candidate);
     if (bas) {
-      expect(resultIsoBas.success).toBe(true);
+      assertSuccess(resultIsoBas);
     } else {
-      expect(resultIsoBas.errors).toEqual([
+      assertErrors(resultIsoBas, [
         {
           message: `Type: Expected 'Basic ISO 8601 date', got value '${value}'`,
           path: ".dt",
@@ -61,11 +64,12 @@ describe("DateTime Expected JSON Object", () => {
     }
 
     const expectedRfc = { dt: "$strictisodate" };
+
     const resultIsoRfc = wyv.validate(expectedRfc, candidate);
     if (strict) {
-      expect(resultIsoRfc.success).toBe(true);
+      assertSuccess(resultIsoRfc);
     } else {
-      expect(resultIsoRfc.errors).toEqual([
+      assertErrors(resultIsoRfc, [
         {
           message: `Type: Expected 'RFC 3339 date', got value '${value}'`,
           path: ".dt",

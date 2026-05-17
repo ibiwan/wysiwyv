@@ -1,5 +1,6 @@
 import type { WysiwyvInstance } from "../../src/type/engine";
 import { makeWysiwyv } from "../../src/wysiwyv";
+import { assertSuccess } from "../../test-util";
 
 describe("Any Type Plugin", () => {
   let wyv: WysiwyvInstance;
@@ -51,9 +52,12 @@ describe("Any Type Plugin", () => {
     "validates anything, specifically $label",
     ({ value }) => {
       const expected = { a: "$any" };
+
       const candidate = { a: value };
+
       const result = wyv.validate(expected, candidate);
-      expect(result.success).toBe(true);
+
+      assertSuccess(result);
     },
   );
 });

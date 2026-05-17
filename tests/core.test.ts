@@ -1,5 +1,6 @@
 import type { WysiwyvInstance } from "../src/type/engine";
 import { makeWysiwyv } from "../src/wysiwyv";
+import { assertErrors, assertSuccess } from "../test-util";
 
 describe("Simple Expected JSON Object", () => {
   const expected = {
@@ -22,15 +23,18 @@ describe("Simple Expected JSON Object", () => {
 
   it("should pass when candidate matches the expected object", () => {
     const candidate = { ...expected };
+
     const result = wyv.validate(expected, candidate);
-    expect(result.success).toBe(true);
+
+    assertSuccess(result);
   });
 
   it("should fail when candidate has extra properties", () => {
     const candidate = { ...expected, extra: "value" };
+
     const result = wyv.validate(expected, candidate);
 
-    expect(result.errors).toEqual([
+    assertErrors(result, [
       {
         message: "Unexpected element at 'extra': got 'value'",
         path: ".extra",
@@ -40,9 +44,10 @@ describe("Simple Expected JSON Object", () => {
 
   it("should fail when candidate is missing properties", () => {
     const { a: _a, b: _b, ...candidate } = expected; // create a candidate missing 'a' and 'b'
+
     const result = wyv.validate(expected, candidate);
 
-    expect(result.errors).toEqual([
+    assertErrors(result, [
       {
         message: "Missing element at 'a': expected '1'",
         path: ".a",
@@ -56,9 +61,10 @@ describe("Simple Expected JSON Object", () => {
 
   it("should fail when candidate has wrong number", () => {
     const candidate = { ...expected, a: 2 };
+
     const result = wyv.validate(expected, candidate);
 
-    expect(result.errors).toEqual([
+    assertErrors(result, [
       {
         message: "Value: Expected '1', got '2'",
         path: ".a",
@@ -68,9 +74,10 @@ describe("Simple Expected JSON Object", () => {
 
   it("should fail when candidate has wrong type for number", () => {
     const candidate = { ...expected, a: "not a number" };
+
     const result = wyv.validate(expected, candidate);
 
-    expect(result.errors).toEqual([
+    assertErrors(result, [
       {
         message: "Type: Expected 'number', got value 'not a number'",
         path: ".a",
@@ -80,9 +87,10 @@ describe("Simple Expected JSON Object", () => {
 
   it("should fail when candidate has wrong string", () => {
     const candidate = { ...expected, b: "wrong string" };
+
     const result = wyv.validate(expected, candidate);
 
-    expect(result.errors).toEqual([
+    assertErrors(result, [
       {
         message: "Value: Expected 'c', got 'wrong string'",
         path: ".b",
@@ -92,9 +100,10 @@ describe("Simple Expected JSON Object", () => {
 
   it("should fail when candidate has wrong type for string", () => {
     const candidate = { ...expected, b: 123 };
+
     const result = wyv.validate(expected, candidate);
 
-    expect(result.errors).toEqual([
+    assertErrors(result, [
       {
         message: "Type: Expected 'string', got value '123'",
         path: ".b",
@@ -104,9 +113,10 @@ describe("Simple Expected JSON Object", () => {
 
   it("should fail when candidate has wrong boolean", () => {
     const candidate = { ...expected, d: false };
+
     const result = wyv.validate(expected, candidate);
 
-    expect(result.errors).toEqual([
+    assertErrors(result, [
       {
         message: "Value: Expected 'true', got 'false'",
         path: ".d",
@@ -116,9 +126,10 @@ describe("Simple Expected JSON Object", () => {
 
   it("should fail when candidate has wrong type for boolean", () => {
     const candidate = { ...expected, d: "not a boolean" };
+
     const result = wyv.validate(expected, candidate);
 
-    expect(result.errors).toEqual([
+    assertErrors(result, [
       {
         message: "Type: Expected 'boolean', got value 'not a boolean'",
         path: ".d",
@@ -128,9 +139,10 @@ describe("Simple Expected JSON Object", () => {
 
   it("should fail when candidate has wrong null value", () => {
     const candidate = { ...expected, e: undefined };
+
     const result = wyv.validate(expected, candidate);
 
-    expect(result.errors).toEqual([
+    assertErrors(result, [
       {
         message: "Type: Expected 'null', got value 'undefined'",
         path: ".e",
@@ -140,9 +152,10 @@ describe("Simple Expected JSON Object", () => {
 
   it("should fail when candidate has wrong type for null", () => {
     const candidate = { ...expected, e: 0 };
+
     const result = wyv.validate(expected, candidate);
 
-    expect(result.errors).toEqual([
+    assertErrors(result, [
       {
         message: `Type: Expected 'null', got value '0'`,
         path: ".e",
@@ -152,9 +165,10 @@ describe("Simple Expected JSON Object", () => {
 
   it("should fail when candidate has wrong type for array", () => {
     const candidate = { ...expected, f: { a: "b" } };
+
     const result = wyv.validate(expected, candidate);
 
-    expect(result.errors).toEqual([
+    assertErrors(result, [
       {
         message: `Type: Expected 'array', got value '{"a":"b"}'`,
         path: ".f",
@@ -164,9 +178,10 @@ describe("Simple Expected JSON Object", () => {
 
   it("should fail when candidate has short array", () => {
     const candidate = { ...expected, f: [1] };
+
     const result = wyv.validate(expected, candidate);
 
-    expect(result.errors).toEqual([
+    assertErrors(result, [
       {
         message: `Array length: Expected '${expected.f.length}', got '${candidate.f.length}'`,
         path: ".f",
@@ -184,9 +199,10 @@ describe("Simple Expected JSON Object", () => {
 
   it("should fail when candidate has long array", () => {
     const candidate = { ...expected, f: [1, 2, 3, 4] };
+
     const result = wyv.validate(expected, candidate);
 
-    expect(result.errors).toEqual([
+    assertErrors(result, [
       {
         message: `Array length: Expected '${expected.f.length}', got '${candidate.f.length}'`,
         path: ".f",
@@ -196,9 +212,10 @@ describe("Simple Expected JSON Object", () => {
 
   it("should fail when candidate has wrong type in array", () => {
     const candidate = { ...expected, f: [1, "not a number", 3] };
+
     const result = wyv.validate(expected, candidate);
 
-    expect(result.errors).toEqual([
+    assertErrors(result, [
       {
         message: "Type: Expected 'number', got value 'not a number'",
         path: ".f[1]",
@@ -208,9 +225,10 @@ describe("Simple Expected JSON Object", () => {
 
   it("should fail when candidate has wrong value in array", () => {
     const candidate = { ...expected, f: [1, 99, 3] };
+
     const result = wyv.validate(expected, candidate);
 
-    expect(result.errors).toEqual([
+    assertErrors(result, [
       {
         message: "Value: Expected '2', got '99'",
         path: ".f[1]",
@@ -220,9 +238,10 @@ describe("Simple Expected JSON Object", () => {
 
   it("should fail when candidate has wrong type for object", () => {
     const candidate = { ...expected, g: [] };
+
     const result = wyv.validate(expected, candidate);
 
-    expect(result.errors).toEqual([
+    assertErrors(result, [
       {
         message: "Type: Expected 'object', got value '[]'",
         path: ".g",
@@ -232,9 +251,10 @@ describe("Simple Expected JSON Object", () => {
 
   it("should fail when candidate has wrong nested object value", () => {
     const candidate = { ...expected, g: { h: 5 } };
+
     const result = wyv.validate(expected, candidate);
 
-    expect(result.errors).toEqual([
+    assertErrors(result, [
       {
         message: "Value: Expected '4', got '5'",
         path: ".g.h",
@@ -244,9 +264,10 @@ describe("Simple Expected JSON Object", () => {
 
   it("should fail when candidate has wrong nested object type", () => {
     const candidate = { ...expected, g: { h: "not a number" } };
+
     const result = wyv.validate(expected, candidate);
 
-    expect(result.errors).toEqual([
+    assertErrors(result, [
       {
         message: "Type: Expected 'number', got value 'not a number'",
         path: ".g.h",
@@ -256,9 +277,10 @@ describe("Simple Expected JSON Object", () => {
 
   it("should fail when candidate has wrong nested object value in deeper nesting", () => {
     const candidate = { ...expected, j: { nested: { value: "wrong value" } } };
+
     const result = wyv.validate(expected, candidate);
 
-    expect(result.errors).toEqual([
+    assertErrors(result, [
       {
         message: "Value: Expected 'test', got 'wrong value'",
         path: ".j.nested.value",
@@ -268,9 +290,10 @@ describe("Simple Expected JSON Object", () => {
 
   it("should fail when candidate has missing key in deeper nesting", () => {
     const candidate = { ...expected, j: { nested: {} } };
+
     const result = wyv.validate(expected, candidate);
 
-    expect(result.errors).toEqual([
+    assertErrors(result, [
       {
         message: "Missing element at 'value': expected 'test'",
         path: ".j.nested.value",
@@ -283,9 +306,10 @@ describe("Simple Expected JSON Object", () => {
       ...expected,
       j: { nested: { value: "test", extra: "value" } },
     };
+
     const result = wyv.validate(expected, candidate);
 
-    expect(result.errors).toEqual([
+    assertErrors(result, [
       {
         message: "Unexpected element at 'extra': got 'value'",
         path: ".j.nested.extra",

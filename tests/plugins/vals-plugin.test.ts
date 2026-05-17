@@ -1,5 +1,6 @@
 import type { WysiwyvInstance } from "../../src/type/engine";
 import { makeWysiwyv } from "../../src/wysiwyv";
+import { assertErrors, assertSuccess } from "../../test-util";
 
 describe("Val Expected JSON Object", () => {
   const predefs = {
@@ -29,7 +30,7 @@ describe("Val Expected JSON Object", () => {
     };
 
     const result = wyv.validate(expected, candidate);
-    expect(result.success).toBe(true);
+    assertSuccess(result);
   });
 
   test("shallow mismatch", () => {
@@ -42,7 +43,7 @@ describe("Val Expected JSON Object", () => {
     };
 
     const result = wyv.validate(expected, candidate);
-    expect(result.errors).toEqual([
+    assertErrors(result, [
       {
         message: "Expected value 'ball' for key 'apple', got 'spheroid'",
         path: ".shape",
@@ -64,7 +65,7 @@ describe("Val Expected JSON Object", () => {
     };
 
     const result = wyv.validate(expected, candidate);
-    expect(result.errors).toEqual([
+    assertErrors(result, [
       {
         message: "Expected value 'cat' for key 'peach', got 'dog'",
         path: ".nested.fuzzbearer",
@@ -89,7 +90,7 @@ describe("Val Expected JSON Object", () => {
 
     const result = wyv.validate(expected, candidate);
 
-    expect(result.errors).toEqual([
+    assertErrors(result, [
       {
         message: "Expected value 'carrot' for key 'crunch', got 'celery'",
         path: ".nested.crunchable",

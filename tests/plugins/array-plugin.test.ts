@@ -1,5 +1,6 @@
 import type { WysiwyvInstance } from "../../src/type/engine";
 import { makeWysiwyv } from "../../src/wysiwyv";
+import { assertErrors, assertSuccess } from "../../test-util";
 
 describe("Expected Array in Object", () => {
   let wyv: WysiwyvInstance;
@@ -10,16 +11,21 @@ describe("Expected Array in Object", () => {
 
   it("should pass when an array is an array", () => {
     const expected = { arr: "$array" };
+
     const candidate = { arr: ["a"] };
+
     const result = wyv.validate(expected, candidate);
-    expect(result.success).toBe(true);
+
+    assertSuccess(result);
   });
 
   it("should fail when an array is not an array", () => {
     const expected = { arr: "$array" };
+
     const candidate = { arr: "a" };
+
     const result = wyv.validate(expected, candidate);
-    expect(result.errors).toEqual([
+    assertErrors(result, [
       {
         message: "Type: Expected 'array', got value 'a'",
         path: ".arr",
@@ -29,16 +35,20 @@ describe("Expected Array in Object", () => {
 
   it("should pass when an array has the exact length", () => {
     const expected = { arr: { $array: { $length: 4 } } };
+
     const candidate = { arr: ["a", "b", "c", "d"] };
+
     const result = wyv.validate(expected, candidate);
-    expect(result.success).toBe(true);
+    assertSuccess(result);
   });
 
   it("should fail when an array is too short for fixed length", () => {
     const expected = { arr: { $array: { $length: 4 } } };
+
     const candidate = { arr: ["a", "b", "c"] };
+
     const result = wyv.validate(expected, candidate);
-    expect(result.errors).toEqual([
+    assertErrors(result, [
       {
         message: "$array.$length: Expected '4', got '3'",
         path: ".arr",
@@ -48,9 +58,11 @@ describe("Expected Array in Object", () => {
 
   it("should fail when an array is too short for fixed length", () => {
     const expected = { arr: { $array: { $length: 3 } } };
+
     const candidate = { arr: ["a", "b", "c", "d"] };
+
     const result = wyv.validate(expected, candidate);
-    expect(result.errors).toEqual([
+    assertErrors(result, [
       {
         message: "$array.$length: Expected '3', got '4'",
         path: ".arr",
@@ -60,23 +72,29 @@ describe("Expected Array in Object", () => {
 
   it("should succeed when array is at minimum length", () => {
     const expected = { arr: { $array: { $minlength: 4 } } };
+
     const candidate = { arr: ["a", "b", "c", "d"] };
+
     const result = wyv.validate(expected, candidate);
-    expect(result.success).toBe(true);
+    assertSuccess(result);
   });
 
   it("should succeed when array is above minimum length", () => {
     const expected = { arr: { $array: { $minlength: 3 } } };
+
     const candidate = { arr: ["a", "b", "c", "d"] };
+
     const result = wyv.validate(expected, candidate);
-    expect(result.success).toBe(true);
+    assertSuccess(result);
   });
 
   it("should fail when array is below minimum length", () => {
     const expected = { arr: { $array: { $minlength: 5 } } };
+
     const candidate = { arr: ["a", "b", "c", "d"] };
+
     const result = wyv.validate(expected, candidate);
-    expect(result.errors).toEqual([
+    assertErrors(result, [
       {
         message: "$array.$minlength: Expected '5', got '4'",
         path: ".arr",
@@ -86,23 +104,29 @@ describe("Expected Array in Object", () => {
 
   it("should succeed when array is at maximum length", () => {
     const expected = { arr: { $array: { $maxlength: 4 } } };
+
     const candidate = { arr: ["a", "b", "c", "d"] };
+
     const result = wyv.validate(expected, candidate);
-    expect(result.success).toBe(true);
+    assertSuccess(result);
   });
 
   it("should succeed when array is below maximum length", () => {
     const expected = { arr: { $array: { $maxlength: 5 } } };
+
     const candidate = { arr: ["a", "b", "c", "d"] };
+
     const result = wyv.validate(expected, candidate);
-    expect(result.success).toBe(true);
+    assertSuccess(result);
   });
 
   it("should fail when array is above maximum length", () => {
     const expected = { arr: { $array: { $maxlength: 3 } } };
+
     const candidate = { arr: ["a", "b", "c", "d"] };
+
     const result = wyv.validate(expected, candidate);
-    expect(result.errors).toEqual([
+    assertErrors(result, [
       {
         message: "$array.$maxlength: Expected '3', got '4'",
         path: ".arr",
@@ -112,9 +136,11 @@ describe("Expected Array in Object", () => {
 
   it("should fail on mixed parameters", () => {
     const expected = { arr: { $array: { $minlength: 4, $purpleLength: 22 } } };
+
     const candidate = { arr: ["a", "b", "c", "d"] };
+
     const result = wyv.validate(expected, candidate);
-    expect(result.errors).toEqual([
+    assertErrors(result, [
       {
         message:
           "Configuration Error: Ignored unknown $array parameters: '$purpleLength'",
@@ -127,6 +153,7 @@ describe("Expected Array in Object", () => {
     const expected = {
       arr: { $array: { $each: { a: 1, b: { $val: "shared" } } } },
     };
+
     const candidate = {
       arr: [
         { a: 1, b: "purple" },
@@ -134,8 +161,9 @@ describe("Expected Array in Object", () => {
         { a: 1, b: "purple" },
       ],
     };
+
     const result = wyv.validate(expected, candidate);
-    expect(result.success).toBe(true);
+    assertSuccess(result);
   });
 
   it("should fail when array does not match explicit each shape", () => {
@@ -151,6 +179,7 @@ describe("Expected Array in Object", () => {
         },
       },
     };
+
     const candidate = {
       arr: [
         { a: 1, b: "purple" },
@@ -158,8 +187,9 @@ describe("Expected Array in Object", () => {
         { a: 1, b: "puople" },
       ],
     };
+
     const result = wyv.validate(expected, candidate);
-    expect(result.errors).toEqual([
+    assertErrors(result, [
       {
         message: "Expected value 'purple' for key 'shared', got 'puiple'",
         path: ".arr[1].b",
@@ -173,6 +203,7 @@ describe("Expected Array in Object", () => {
 
   it("should succeed when array matches implicit each shape", () => {
     const expected = { arr: { $array: { a: 1, b: { $val: "shared" } } } };
+
     const candidate = {
       arr: [
         { a: 1, b: "purple" },
@@ -180,8 +211,9 @@ describe("Expected Array in Object", () => {
         { a: 1, b: "purple" },
       ],
     };
+
     const result = wyv.validate(expected, candidate);
-    expect(result.success).toBe(true);
+    assertSuccess(result);
   });
 
   it("should fail when array does not match implicit each shape", () => {
@@ -203,8 +235,9 @@ describe("Expected Array in Object", () => {
         { a: 1, b: "puople" },
       ],
     };
+
     const result = wyv.validate(expected, candidate);
-    expect(result.errors).toEqual([
+    assertErrors(result, [
       {
         message: "Expected value 'purple' for key 'shared', got 'puiple'",
         path: ".arr[1].b",

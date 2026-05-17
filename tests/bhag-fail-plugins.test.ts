@@ -1,5 +1,6 @@
 import type { HookValue } from "../src/type/template";
 import { makeWysiwyv } from "../src/wysiwyv";
+import { assertErrors } from "../test-util";
 
 describe("big hairy plugins template rejects big hairy data", () => {
   const data = {
@@ -26,7 +27,7 @@ describe("big hairy plugins template rejects big hairy data", () => {
   it("rejects a custom lot", () => {
     const wyv = makeWysiwyv();
     const result = wyv.validate(template, data);
-    expect(result.errors).toEqual([
+    assertErrors(result, [
       {
         message:
           "Configuration Error: $and value should be an array of templates",
