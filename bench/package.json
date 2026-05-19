@@ -1,0 +1,21 @@
+{
+  "name": "wysiwyv-bench",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "bench": "bun run index.ts"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "joi": "^18.2.1",
+    "mitata": "^1.0.34",
+    "valibot": "^1.4.0",
+    "yup": "^1.7.1",
+    "zod": "^4.4.3"
+  }
+}

@@ -28,7 +28,7 @@ const SUCCESS: HookAssessment = {
 };
 
 const start = (errors: readonly HookError[] = []): HookAssessment => {
-  const _errors: HookError[] = [...errors];
+  const _errors: HookError[] = errors.length === 0 ? [] : [...errors];
 
   const assessment: HookAssessment = {
     get success() {
@@ -44,7 +44,7 @@ const start = (errors: readonly HookError[] = []): HookAssessment => {
     },
 
     include(newAssessment: HookAssessment): HookAssessment {
-      _errors.push(...newAssessment.errors);
+      if (!newAssessment.success) _errors.push(...newAssessment.errors);
 
       return assessment;
     },

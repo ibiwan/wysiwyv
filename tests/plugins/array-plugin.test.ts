@@ -216,6 +216,30 @@ describe("Expected Array in Object", () => {
     assertSuccess(result);
   });
 
+  it("should fail when array does not match implicit each non-object value", () => {
+    const expected = {
+      arr: { $array: "I've told you thrice" },
+    };
+
+    const candidate = {
+      arr: ["I've told you twice", "I've told you twice"],
+    };
+
+    const result = wyv.validate(expected, candidate);
+    assertErrors(result, [
+      {
+        message:
+          "Value: Expected 'I've told you thrice', got 'I've told you twice'",
+        path: ".arr[0]",
+      },
+      {
+        message:
+          "Value: Expected 'I've told you thrice', got 'I've told you twice'",
+        path: ".arr[1]",
+      },
+    ]);
+  });
+
   it("should fail when array does not match implicit each shape", () => {
     const expected = {
       arr: {

@@ -1,4 +1,5 @@
 import { defaultHooks } from "./hooks";
+
 import type { PluginList } from "./type/plugin";
 import type { WysiwyvFactory } from "./type/engine";
 import type { WysiwyvConfig } from "./type/engine";

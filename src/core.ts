@@ -1,5 +1,5 @@
 import { type WysiwyvEvaluatorFunction } from "./type/engine";
-import { type ContextObject } from "./type/plugin";
+import { type ContextObject, type HookKey } from "./type/plugin";
 import { type HookValue } from "./type/template";
 import { type HookObject } from "./type/template";
 import { type HookHandler } from "./type/plugin";
@@ -34,6 +34,7 @@ export const makeCore = (hooks: PluginList, pluginSetups: MultiContext) => {
   const perHookSetups: MultiContext = Object.freeze({ ...pluginSetups });
   const perHookContexts: MultiContext = {};
   const sharedContext: HookObject = {};
+  const handlerKeyCache = new Map<HookKey, HookHandler>();
 
   const evaluate: WysiwyvEvaluatorFunction = (expected, candidate, path) => {
     const key = getHookKey(expected);
@@ -46,9 +47,16 @@ export const makeCore = (hooks: PluginList, pluginSetups: MultiContext) => {
 
     const hookContext: ContextObject = perHookContexts[key];
 
-    const hookPlugin = hooks.find((h) => h.handles(key));
-
-    const handler = hookPlugin?.handlers[key];
+    let handler;
+    if (handlerKeyCache.has(key)) {
+      handler = handlerKeyCache.get(key);
+    } else {
+      const hookPlugin = hooks.find((h) => h.handles(key));
+      handler = hookPlugin?.handlers[key];
+      if (handler) {
+        handlerKeyCache.set(key, handler);
+      }
+    }
 
     if (!handler) return expectNormal(expected, candidate, path);
 

@@ -1,5 +1,5 @@
-| [README](README.md) | _USAGE_ | [INCLUDED PLUGINS](README-INCLUDED-PLUGINS.md) | [PLUGIN AUTHORING](README-PLUGIN-AUTHORING.md) |
-| :------------------ | :------ | :--------------------------------------------- | :--------------------------------------------- |
+| [README](README.md) | _USAGE_ | [INCLUDED PLUGINS](README-INCLUDED-PLUGINS.md) | [PLUGIN AUTHORING](README-PLUGIN-AUTHORING.md) | [INTEGRATION](README-INTEGRATION.md) |
+| :------------------ | :------ | :--------------------------------------------- | :--------------------------------------------- | :----------------------------------- |
 
 # WYSIWYV - Usage
 
@@ -10,6 +10,7 @@
 - [Escaping](#escaping)
 - [Plugin Parameters](#plugin-parameters)
 - [Initialization](#initialization)
+- [Template Parameters](#template-parameters)
 - [Composition](#composition)
 
 ## Basics
@@ -42,9 +43,11 @@
 
    `console.log(result.success);`
 
-   ```js
-   true;
+   ```json
+   true
    ```
+
+[↑ top](#wysiwyv---usage)
 
 ## Result Format
 
@@ -78,6 +81,8 @@ On errors:
   ]
 }
 ```
+
+[↑ top](#wysiwyv---usage)
 
 ## Literal Matching
 
@@ -137,6 +142,8 @@ template:
 }
 ```
 
+[↑ top](#wysiwyv---usage)
+
 ## Plugins
 
 Plugins are where everything gets flexible. You can assess data types, sub-object shapes, array length, array elements, combine assessments with boolean logic, or write your own plugins for anything we didn't think of.
@@ -163,6 +170,8 @@ loose:
 }
 ```
 
+[↑ top](#wysiwyv---usage)
+
 ## Escaping
 
 Sometimes you really will want to match a string starting with a dollar sign. Just use a second dollar sign (`$$`) in your matching string to indicate it's not meant to be a plugin key.
@@ -183,8 +192,161 @@ matching template (double dollar):
 }
 ```
 
+[↑ top](#wysiwyv---usage)
+
 ## Plugin Parameters
+
+When referencing a plugin, it can be passed 0, 1, or more parameters.
+
+0 Params: Just use the plugin key as a string.
+
+```json
+{
+  "datum-list": "$array"
+}
+```
+
+1 Param: Use a simple object with plugin as key and parameter as value. The plugin's docs will tell you what argument a single parameter will correspond to, if there are multiple.
+
+```js
+{
+  // default arg is $uuid.$version
+  "id": { "$uuid": 4 },
+}
+```
+
+More Params: Use a nested object. The outer just has the plugin key, and the inner has the parameters paired with named keys.
+
+```json
+{
+  "datum-list": {
+    "$array": {
+      "$minlength": 2,
+      "$maxlength": 10
+    }
+  }
+}
+```
+
+[↑ top](#wysiwyv---usage)
 
 ## Initialization
 
+Plugins can accept pre-filled setup objects. For example, when matching values, you could have some that you got from another source during a test, but after setting up the validation template.
+
+```js
+const wyv = makeWysiwyv({
+  pluginSetups: {
+    $val: {
+      entityId: 24601,
+    },
+  },
+});
+
+const data = {
+  id: 24601,
+};
+
+const template = {
+  id: { $val: "entityId" },
+};
+
+const result = wyv.validate(template, data);
+
+// result.success === true
+```
+
+[↑ top](#wysiwyv---usage)
+
+## Template Parameters
+
+### (Meta-Plugins)
+
+Some plugins accept matcher templates as parameters.
+
+- `$and` and `$or` each take an array of templates to evaluate
+- `$array.$each` is an optional template that every element of an array must individually match
+- `$object.$eachElement` and `$plainobject.$eachElement` are similar, every value (regardless of key) must match
+- `$object.$partial` and `$plainobject.$partial` are optional (mutually exclusive with `.$eachElement`) templates. Every k-v present in the provided template must be present in the candidate data being evaluated. Extra candidate-object keys beyond those listed are ignored (accepted).
+
+### $or template:
+
+```json
+{
+  "department": {
+    "$or": ["Sales", "Marketing", "Ideation", "Finance"]
+  }
+}
+```
+
+### $object.$partial
+
+#### candidate data:
+
+```js
+{
+  id: 24680,
+  name: "Jane Doe-Smith",
+}
+```
+
+#### matcher template:
+
+```json
+{
+  "$object": {
+    "$partial": {
+      "id": 24680
+      // ignores .name
+    }
+  }
+}
+```
+
+[↑ top](#wysiwyv---usage)
+
 ## Composition
+
+Any Meta-Plugins can be nested and alternated arbitrarily with other plugins and with core behavior. Because control is handed back to the engine for each node in descent, nested claims are treated identically to ones in the base tree.
+
+data:
+
+```js
+{
+  people: [
+    {
+      name: "Jon Deo",
+      title: "CEO",
+      salary: 800_000,
+    },
+    {
+      name: "Don Jo",
+      department: "Burger-Flippin",
+      wage: 3.75,
+    },
+  ],
+}
+```
+
+template:
+
+```js
+{
+  people: {
+    $array: { $each: {
+        $and: [
+          { $object: { $partial:
+            { name: "$string" }
+          }},
+          { $or: [
+            { name: "$any", title: "$string", salary: "$number" },
+            { name: "$any", department: "$string", wage: "$number" },
+          ]},
+        ],
+      },
+    },
+  },
+}
+```
+
+[↑ top](#wysiwyv---usage)

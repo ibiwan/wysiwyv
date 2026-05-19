@@ -29,13 +29,17 @@ const arrayWyvern: WyvPlugin<WyvParams, WyvSetup, WyvContext> = {
 
       const errors = HookAssessor.start();
 
+      const normalizedParams = isObject(params)
+        ? params
+        : { [WYV_ARRAY_PARAM_EACH]: params };
+
       const {
         [WYV_ARRAY_PARAM_LENGTH]: length,
         [WYV_ARRAY_PARAM_MINLENGTH]: minLength,
         [WYV_ARRAY_PARAM_MAXLENGTH]: maxLength,
         [WYV_ARRAY_PARAM_EACH]: each,
         ...rest
-      } = isObject(params) ? params : {};
+      } = normalizedParams;
 
       const isParametric: boolean =
         isDefined(length) ||

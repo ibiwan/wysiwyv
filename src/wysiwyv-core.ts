@@ -1,4 +1,5 @@
 import { makeCore } from "./core";
+
 import type { HookValue } from "./type/template";
 import type { PluginList } from "./type/plugin";
 import type { WysiwyvFactory } from "./type/engine";

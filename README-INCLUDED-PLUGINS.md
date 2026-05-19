@@ -1,5 +1,5 @@
-| [README](README.md) | [USAGE](README-USAGE.md) | _INCLUDED PLUGINS_ | [PLUGIN AUTHORING](README-PLUGIN-AUTHORING.md) |
-| :------------------ | :----------------------- | :----------------- | :--------------------------------------------- |
+| [README](README.md) | [USAGE](README-USAGE.md) | _INCLUDED PLUGINS_ | [PLUGIN AUTHORING](README-PLUGIN-AUTHORING.md) | [INTEGRATION](README-INTEGRATION.md) |
+| :------------------ | :----------------------- | :----------------- | :--------------------------------------------- | :----------------------------------- |
 
 # Included Plugins
 
@@ -106,7 +106,8 @@ Validates that the input is an array.
   - `$length` — exact length match
   - `$minlength` — minimum length (inclusive)
   - `$maxlength` — maximum length (inclusive)
-  - `$each` — validate every element against a template
+  - `$each` — validate every element against a template  
+    If _none_ of these are present, any parameter provided will be treated as `$each`
 - All length constraints are checked independently; a value can fail multiple constraints
 - ⚠️ Unknown parameters alongside recognized ones generate a config error
 
@@ -126,6 +127,13 @@ Validates that the input is an array.
     "$array": {
         "$each": "$string"
     }
+}}
+```
+
+```js
+// implicit $each — validate every element
+{ "ages": {
+    "$array": "$number"
 }}
 ```
 

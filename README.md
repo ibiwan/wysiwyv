@@ -1,7 +1,11 @@
-| _README_ | [USAGE](README-USAGE.md) | [INCLUDED PLUGINS](README-INCLUDED-PLUGINS.md) | [PLUGIN AUTHORING](README-PLUGIN-AUTHORING.md) |
-| :------- | :----------------------- | :--------------------------------------------- | :--------------------------------------------- |
+| _README_ | [USAGE](README-USAGE.md) | [INCLUDED PLUGINS](README-INCLUDED-PLUGINS.md) | [PLUGIN AUTHORING](README-PLUGIN-AUTHORING.md) | [INTEGRATION](README-INTEGRATION.md) |
+| :------- | :----------------------- | :--------------------------------------------- | :--------------------------------------------- | :----------------------------------- |
 
 # WYSIWYV
+
+- [Why You Wyv](#why-you-wyv)
+- [Included Plugins](#included-plugins)
+- [Make Your Own Plugins](#make-your-own-plugins)
 
 ## What You See is What You Validate
 
@@ -78,10 +82,11 @@
   - $-prefix for plugins
   - Templates are Language-Agnostic
     - Other language libraries to follow
-- Tiny: Core is < 1.5kB
+- Tiny: Core is ~ 1.5kB
 - Batteries: Included
 - Flexible: Rich Plugin API
-- Fast: <benchmarks tbd>
+- Fast Enough: Faster than yup and joi.  
+  _(Still pursuing zod and valibot)_
 - Simple: Reuse in:
   - jest assertions
   - express middleware
@@ -91,6 +96,8 @@
 ### The real reason:
 
 - You like that the plugins are called wyverns.
+
+[↑ top](#wysiwyv)
 
 ## Included Plugins
 
@@ -109,9 +116,11 @@ Read the [Included Plugins Documentation](README-INCLUDED-PLUGINS.md)
   - Match values known at call time
   - Ensure values match within data (back-references)
 
+[↑ top](#wysiwyv)
+
 ## Make Your Own Plugins
 
-Read the [Plugin Author Documentation](README-PLUGIN-AUTHORS.md)
+Read the [Plugin Authoring Documentation](README-PLUGIN-AUTHORING.md)
 
 - Full Type System enables clean interfacing
   - See `src/type/plugin.ts` for contract
@@ -123,14 +132,18 @@ Read the [Plugin Author Documentation](README-PLUGIN-AUTHORS.md)
 - `evaluate` function provided for custom recursive descent
   - See `src/hooks/object.ts` for descent example
 
+[↑ top](#wysiwyv)
+
 # TODO
 
 - [x] Base Plugin Set
 - [x] Test Coverage
-- [ ] Documentation
-  - [ ] Plugin Authors
-  - [ ] Included Plugins
-- [ ] Benchmarks
-- [ ] Harnesses (readme examples)
+- [x] Documentation
+  - [x] Basic Usage
+  - [x] Plugin Authors
+  - [x] Included Plugins
+  - [x] Integration Examples
+- [x] Benchmarks
 - [ ] Distro Builds
 - [ ] To Npm!
+- [ ] Reuse Instances
