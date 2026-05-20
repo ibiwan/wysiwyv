@@ -1,0 +1,20 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "allowImportingTsExtensions": false,
+    "noEmit": false,
+    "declaration": true,
+    "declarationMap": true,
+    "outDir": "./dist",
+    "module": "ESNext",
+    "moduleResolution": "node"
+  },
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "bench",
+    "tests",
+    "**/*.test.ts"
+  ]
+}

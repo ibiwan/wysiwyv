@@ -1,31 +1,57 @@
 {
   "name": "wysiwyv",
-  "module": "index.ts",
-  "sideEffects": false,
-  "type": "module",
-  "scripts": {
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
-    "check": "bun x tsc --noEmit",
-    "test": "bun test --reporter=dot",
-    "build-example": "bun build ./example.ts --minify --outdir ./dist && gzip -kf dist/example.js",
-    "build-full": "bun build ./src/wysiwyv.ts --minify --outdir ./dist && gzip -kf dist/wysiwyv.js",
-    "build-core": "bun build ./src/wysiwyv-core.ts --minify --outdir ./dist && gzip -kf dist/wysiwyv-core.js",
-    "check-output": "ls -l dist | tail -n +2 | awk '{printf \"%-18s %5s B\\n\", $9, $5}'",
-    "all": "bun run --sequential lint check test build-example build-full build-core check-output"
-  },
+  "version": "0.1.1",
+  "main": "./dist/wysiwyv.js",
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@types/bun": "latest",
+    "@types/jest": "^30.0.0",
     "eslint": "^10.3.0",
     "globals": "^17.6.0",
+    "jest": "^30.4.2",
     "jiti": "^2.7.0",
     "typescript-eslint": "^8.59.2"
   },
   "peerDependencies": {
     "typescript": "^5"
   },
-  "dependencies": {
-    "@types/jest": "^30.0.0"
-  }
+  "peerDependenciesMeta": {
+    "typescript": {
+      "optional": true
+    }
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/wysiwyv.d.ts",
+      "import": "./dist/wysiwyv.js"
+    },
+    "./core": {
+      "types": "./dist/wysiwyv-core.d.ts",
+      "import": "./dist/wysiwyv-core.js"
+    }
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "README*.md"
+  ],
+  "jsdelivr": "./dist/wysiwyv.min.js",
+  "scripts": {
+    "deps": "bun install",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "check": "bun x tsc --noEmit",
+    "test": "bun test --reporter=dot",
+    "clean": "rm -rf ./dist",
+    "build": "tsc -p tsconfig.build.json",
+    "build-example": "bun build ./example.ts --minify --outdir ./dist && gzip -kf dist/example.js",
+    "build-full": "bun build ./src/wysiwyv.ts --minify --outfile ./dist/wysiwyv.min.js",
+    "build-core": "bun build ./src/wysiwyv-core.ts --minify --outfile ./dist/wysiwyv-core.min.js",
+    "check-output": "ls -l dist | tail -n +2 | awk '{printf \"%-18s %5s B\\n\", $9, $5}'",
+    "all": "bun run --sequential deps clean lint check test build build-full check-output && bun publish --dry-run"
+  },
+  "sideEffects": false,
+  "type": "module",
+  "types": "./dist/wysiwyv.d.ts",
+  "unpkg": "./dist/wysiwyv.min.js"
 }

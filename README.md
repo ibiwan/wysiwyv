@@ -84,6 +84,7 @@
     - Other language libraries to follow
 - Tiny: Core is ~ 1.5kB
 - Batteries: Included
+- Strict: By Default
 - Flexible: Rich Plugin API
 - Fast Enough: Faster than yup and joi.  
   _(Still pursuing zod and valibot)_
@@ -140,7 +141,7 @@ Read the [Plugin Authoring Documentation](README-PLUGIN-AUTHORING.md)
 - [x] Test Coverage
 - [x] Documentation
   - [x] Basic Usage
-  - [x] Plugin Authors
+  - [x] Plugin Authoring
   - [x] Included Plugins
   - [x] Integration Examples
 - [x] Benchmarks
