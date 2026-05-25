@@ -1,9 +1,9 @@
-import type { HookValue } from "../type/template";
-import type { ContextObject, WyvPlugin } from "../type/plugin";
-import { HookAssessor } from "../util/HookAssessment";
+import type { HookValue } from "../type/template.js";
+import type { ContextObject, WyvPlugin } from "../type/plugin.js";
+import { HookAssessor } from "../util/HookAssessment.js";
 
-import { isBoolean } from "../util/types";
-import { errType } from "../util/HookError";
+import { isBoolean } from "../util/types.js";
+import { errType } from "../util/HookError.js";
 
 export const WYV_KEY_BOOL = "$bool";
 

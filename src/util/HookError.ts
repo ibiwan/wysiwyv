@@ -1,5 +1,5 @@
-import type { HookValue } from "../type/template";
-import { repr } from "./stringify";
+import type { HookValue } from "../type/template.js";
+import { repr } from "./stringify.js";
 
 export interface HookError {
   message: string;

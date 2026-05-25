@@ -145,8 +145,7 @@ Read the [Plugin Authoring Documentation](README-PLUGIN-AUTHORING.md)
   - [x] Included Plugins
   - [x] Integration Examples
 - [x] Benchmarks
-- [ ] Distro Builds
-- [ ] To Npm!
+- [x] Distro Builds
+- [x] To Npm!
+- [x] Test Import Published
 - [ ] Reuse Instances
-
-

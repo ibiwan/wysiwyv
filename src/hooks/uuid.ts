@@ -1,8 +1,8 @@
-import type { ContextObject, HookKey } from "../type/plugin";
-import type { WyvPlugin } from "../type/plugin";
-import { HookAssessor } from "../util/HookAssessment";
-import { errConfig, errType } from "../util/HookError";
-import { isEmptyObject, isNumber, isString } from "../util/types";
+import type { ContextObject, HookKey } from "../type/plugin.js";
+import type { WyvPlugin } from "../type/plugin.js";
+import { HookAssessor } from "../util/HookAssessment.js";
+import { errConfig, errType } from "../util/HookError.js";
+import { isEmptyObject, isNumber, isString } from "../util/types.js";
 
 const hex = "[0-9a-f]";
 const seg8 = `${hex}{8}`;

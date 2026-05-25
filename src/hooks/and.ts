@@ -1,8 +1,8 @@
-import type { HookValue } from "../type/template";
-import type { ContextObject } from "../type/plugin";
-import type { WyvPlugin } from "../type/plugin";
-import { HookAssessor } from "../util/HookAssessment";
-import { errColl, errConfig } from "../util/HookError";
+import type { HookValue } from "../type/template.js";
+import type { ContextObject } from "../type/plugin.js";
+import type { WyvPlugin } from "../type/plugin.js";
+import { HookAssessor } from "../util/HookAssessment.js";
+import { errColl, errConfig } from "../util/HookError.js";
 
 export const WYV_KEY_AND = "$and";
 

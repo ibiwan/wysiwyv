@@ -29,5 +29,8 @@
     "noUnusedParameters": false,
     "noPropertyAccessFromIndexSignature": false
   },
-  "exclude": ["bench"]
+  "exclude": [
+    "bench",
+    "import-tests"
+  ]
 }

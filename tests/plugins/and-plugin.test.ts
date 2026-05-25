@@ -9,6 +9,21 @@ describe("AND boolean plugin", () => {
     wyv = makeWysiwyv();
   });
 
+  it("works on a no predicates", () => {
+    const expected = {
+      // should default to true when empty
+      number: { $and: [] },
+    };
+
+    const candidate = {
+      number: 1,
+    };
+
+    const result = wyv.validate(expected, candidate);
+
+    assertSuccess(result);
+  });
+
   it("works on a single predicate", () => {
     const expected = {
       number: { $and: ["$number"] },

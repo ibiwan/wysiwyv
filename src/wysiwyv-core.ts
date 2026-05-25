@@ -1,20 +1,17 @@
-import { makeCore } from "./core";
+import { makeCore } from "./core.js";
 
-import type { HookValue } from "./type/template";
-import type { PluginList } from "./type/plugin";
-import type { WysiwyvFactory } from "./type/engine";
-import type { WysiwyvConfig } from "./type/engine";
-import type { HookAssessment } from "./util/HookAssessment";
+import type { PluginList } from "./type/plugin.js";
+import type { WysiwyvFactory } from "./type/engine.js";
+import type { WysiwyvConfig } from "./type/engine.js";
 
 export const makeWysiwyv: WysiwyvFactory = (config: WysiwyvConfig = {}) => {
   const { plugins: configHooks = [], pluginSetups = {} } = config;
   const hooks: PluginList = [...configHooks];
 
-  const { evaluate } = makeCore(hooks, pluginSetups);
+  const { evaluate, peekContext } = makeCore(hooks, pluginSetups);
 
   return {
-    validate: (expected: HookValue, candidate: unknown): HookAssessment => {
-      return evaluate(expected, candidate, "");
-    },
+    validate: evaluate,
+    peekContext,
   };
 };

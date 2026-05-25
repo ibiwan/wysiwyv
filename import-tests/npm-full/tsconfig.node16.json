@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "noEmit": true,
+    "module": "node16",
+    "moduleResolution": "node16",
+    "target": "es2020",
+    "skipLibCheck": true
+  },
+  "include": ["check-types.ts"]
+}

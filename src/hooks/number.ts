@@ -1,9 +1,9 @@
-import type { ContextObject } from "../type/plugin";
-import type { HookKey } from "../type/plugin";
-import type { WyvPlugin } from "../type/plugin";
-import { HookAssessor } from "../util/HookAssessment";
-import { errType, errAttr } from "../util/HookError";
-import { isDefined, isNumber, isObject } from "../util/types";
+import type { ContextObject } from "../type/plugin.js";
+import type { HookKey } from "../type/plugin.js";
+import type { WyvPlugin } from "../type/plugin.js";
+import { HookAssessor } from "../util/HookAssessment.js";
+import { errType, errAttr } from "../util/HookError.js";
+import { isDefined, isNumber, isObject } from "../util/types.js";
 
 export const WYV_KEY_NUMBER: HookKey = "$number";
 

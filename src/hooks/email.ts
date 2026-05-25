@@ -1,8 +1,8 @@
-import type { HookValue } from "../type/template";
-import type { ContextObject, WyvPlugin } from "../type/plugin";
-import { HookAssessor } from "../util/HookAssessment";
-import { isString } from "../util/types";
-import { errType } from "../util/HookError";
+import type { HookValue } from "../type/template.js";
+import type { ContextObject, WyvPlugin } from "../type/plugin.js";
+import { HookAssessor } from "../util/HookAssessment.js";
+import { isString } from "../util/types.js";
+import { errType } from "../util/HookError.js";
 
 const ncg = (s: string) => `(?:${s})`;
 const CHARS = `[a-zA-Z0-9_%+\\-]+`;

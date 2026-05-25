@@ -1,5 +1,5 @@
-import type { ContextObject, WyvPlugin } from "../type/plugin";
-import { HookAssessor } from "../util/HookAssessment";
+import type { ContextObject, WyvPlugin } from "../type/plugin.js";
+import { HookAssessor } from "../util/HookAssessment.js";
 
 export const WYV_KEY_ANY = "$any";
 

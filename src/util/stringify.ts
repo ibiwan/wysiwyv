@@ -1,4 +1,4 @@
-import { isNanValue, isNull, isOddObject, isString } from "./types";
+import { isNanValue, isNull, isOddObject, isString } from "./types.js";
 
 function getDetailedType(val: object) {
   // This returns strings like "[object Map]", "[object Date]", "[object RegExp]"

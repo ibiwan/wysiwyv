@@ -1,7 +1,7 @@
-import type { HookKey } from "../type/plugin";
-import type { WyvPlugin } from "../type/plugin";
-import { HookAssessor } from "../util/HookAssessment";
-import { errMatch } from "../util/HookError";
+import type { HookKey } from "../type/plugin.js";
+import type { WyvPlugin } from "../type/plugin.js";
+import { HookAssessor } from "../util/HookAssessment.js";
+import { errMatch } from "../util/HookError.js";
 
 const WYV_KEY_VAL: HookKey = "$val";
 

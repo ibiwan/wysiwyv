@@ -1,9 +1,11 @@
 {
   "name": "wysiwyv",
-  "version": "0.1.1",
+  "version": "0.1.6",
   "main": "./dist/wysiwyv.js",
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@swc/core": "^1.15.33",
+    "@swc/jest": "^0.2.39",
     "@types/bun": "latest",
     "@types/jest": "^30.0.0",
     "eslint": "^10.3.0",
@@ -23,11 +25,18 @@
   "exports": {
     ".": {
       "types": "./dist/wysiwyv.d.ts",
-      "import": "./dist/wysiwyv.js"
+      "import": "./dist/wysiwyv.js",
+      "require": "./dist/wysiwyv.cjs"
     },
     "./core": {
       "types": "./dist/wysiwyv-core.d.ts",
-      "import": "./dist/wysiwyv-core.js"
+      "import": "./dist/wysiwyv-core.js",
+      "require": "./dist/wysiwyv-core.cjs"
+    },
+    "./plugins": {
+      "types": "./dist/hooks/index.d.ts",
+      "import": "./dist/hooks/index.js",
+      "require": "./dist/hooks/index.cjs"
     }
   },
   "files": [
@@ -42,13 +51,15 @@
     "lint:fix": "eslint . --fix",
     "check": "bun x tsc --noEmit",
     "test": "bun test --reporter=dot",
+    "cover": "bun test --coverage --coverage-reporter=lcov && genhtml coverage/lcov.info -o coverage/html",
     "clean": "rm -rf ./dist",
     "build": "tsc -p tsconfig.build.json",
     "build-example": "bun build ./example.ts --minify --outdir ./dist && gzip -kf dist/example.js",
     "build-full": "bun build ./src/wysiwyv.ts --minify --outfile ./dist/wysiwyv.min.js",
     "build-core": "bun build ./src/wysiwyv-core.ts --minify --outfile ./dist/wysiwyv-core.min.js",
+    "build-cjs": "bun build ./src/wysiwyv.ts --format=cjs --outfile ./dist/wysiwyv.cjs && bun build ./src/wysiwyv-core.ts --format=cjs --outfile ./dist/wysiwyv-core.cjs && bun build ./src/hooks/index.ts --format=cjs --outfile ./dist/hooks/index.cjs",
     "check-output": "ls -l dist | tail -n +2 | awk '{printf \"%-18s %5s B\\n\", $9, $5}'",
-    "all": "bun run --sequential deps clean lint check test build build-full check-output && bun publish --dry-run"
+    "all": "bun run --sequential deps clean lint check test build build-full build-core build-cjs check-output && bun publish --dry-run"
   },
   "sideEffects": false,
   "type": "module",

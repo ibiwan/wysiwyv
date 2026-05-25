@@ -1,7 +1,7 @@
-import type { ContextObject, WyvPlugin } from "../type/plugin";
-import { HookAssessor } from "../util/HookAssessment";
-import { isString } from "../util/types";
-import { errType } from "../util/HookError";
+import type { ContextObject, WyvPlugin } from "../type/plugin.js";
+import { HookAssessor } from "../util/HookAssessment.js";
+import { isString } from "../util/types.js";
+import { errType } from "../util/HookError.js";
 
 export const WYV_KEY_STRING = "$string";
 

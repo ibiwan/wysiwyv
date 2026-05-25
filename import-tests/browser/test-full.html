@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head><title>wysiwyv browser test — full</title></head>
+<body>
+<script type="module">
+import { makeWysiwyv } from "https://cdn.jsdelivr.net/npm/wysiwyv/dist/wysiwyv.min.js";
+
+const results = [];
+
+try {
+  const wyv = makeWysiwyv();
+
+  const pass = wyv.validate({ name: "hello" }, { name: "hello" });
+  results.push({
+    test: "full — literal match passes",
+    ok: pass.success === true,
+  });
+
+  const fail = wyv.validate({ id: "$int" }, { id: "not a number" });
+  results.push({
+    test: "full — $int rejects string",
+    ok: fail.success === false && fail.errors.length > 0,
+  });
+} catch (e) {
+  results.push({ test: "full — import and init", ok: false, error: e.message });
+}
+
+window.__TEST_RESULTS__ = results;
+</script>
+</body>
+</html>

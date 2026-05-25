@@ -15,6 +15,7 @@
   "exclude": [
     "bench",
     "tests",
+    "import-tests",
     "**/*.test.ts"
   ]
 }

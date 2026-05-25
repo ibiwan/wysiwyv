@@ -1,0 +1,9 @@
+{
+  "name": "treeshake-test",
+  "version": "1.0.0",
+  "type": "module",
+  "private": true,
+  "dependencies": {
+    "wysiwyv": "^0.1.5"
+  }
+}

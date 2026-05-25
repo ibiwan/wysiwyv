@@ -1,8 +1,8 @@
-import type { ContextObject, HookKey } from "../type/plugin";
-import type { WyvPlugin } from "../type/plugin";
-import { HookAssessor } from "../util/HookAssessment";
-import { errType } from "../util/HookError";
-import { isString } from "../util/types";
+import type { ContextObject, HookKey } from "../type/plugin.js";
+import type { WyvPlugin } from "../type/plugin.js";
+import { HookAssessor } from "../util/HookAssessment.js";
+import { errType } from "../util/HookError.js";
+import { isString } from "../util/types.js";
 
 const YEAR = "(?:\\d{4})"; // 0000-9999
 const MONTH = "(?:0[1-9]|1[0-2])"; // 01-12;

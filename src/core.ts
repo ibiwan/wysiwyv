@@ -1,11 +1,11 @@
-import { type WysiwyvEvaluatorFunction } from "./type/engine";
-import { type ContextObject, type HookKey } from "./type/plugin";
-import { type HookValue } from "./type/template";
-import { type HookObject } from "./type/template";
-import { type HookHandler } from "./type/plugin";
-import { type PluginList } from "./type/plugin";
+import { type WysiwyvEvaluatorFunction } from "./type/engine.js";
+import { type ContextObject, type HookKey } from "./type/plugin.js";
+import { type HookValue } from "./type/template.js";
+import { type HookObject } from "./type/template.js";
+import { type HookHandler } from "./type/plugin.js";
+import { type PluginList } from "./type/plugin.js";
 
-import { HookAssessor, type HookAssessment } from "./util/HookAssessment";
+import { HookAssessor, type HookAssessment } from "./util/HookAssessment.js";
 
 import {
   errAttr,
@@ -14,10 +14,10 @@ import {
   errType,
   errUnexpected,
   errValue,
-} from "./util/HookError";
+} from "./util/HookError.js";
 
-import { getHookKey, getHookParams } from "./util/parseHook";
-import { repr } from "./util/stringify";
+import { getHookKey, getHookParams } from "./util/parseHook.js";
+import { repr } from "./util/stringify.js";
 
 import {
   isArray,
@@ -27,16 +27,51 @@ import {
   isPlainObject,
   isString,
   isUndefined,
-} from "./util/types";
-import type { MultiContext } from "./type/engine";
+} from "./util/types.js";
+
+import type {
+  MultiContext,
+  WysiwyvInternalContexts,
+  WysiwyvRootEvaluator,
+} from "./type/engine.js";
 
 export const makeCore = (hooks: PluginList, pluginSetups: MultiContext) => {
   const perHookSetups: MultiContext = Object.freeze({ ...pluginSetups });
+  console.log("initializing context");
   const perHookContexts: MultiContext = {};
   const sharedContext: HookObject = {};
   const handlerKeyCache = new Map<HookKey, HookHandler>();
 
+  const clearObject = (obj: Record<string, unknown>) => {
+    for (const key in obj) {
+      delete obj[key];
+    }
+  };
+
+  const peekContext = (): WysiwyvInternalContexts => ({
+    perHookSetups: { ...perHookSetups },
+    perHookContexts: { ...perHookContexts },
+    sharedContext: { ...sharedContext },
+    handlerKeyCache: { ...handlerKeyCache },
+  });
+
+  const rootEvaluate: WysiwyvRootEvaluator = (
+    expected,
+    candidate,
+    keepContext = false,
+  ) => {
+    console.log({ keepContext });
+    if (!keepContext) {
+      console.log("clearing context");
+      clearObject(perHookContexts);
+      clearObject(sharedContext);
+    }
+
+    return evaluate(expected, candidate, "");
+  };
+
   const evaluate: WysiwyvEvaluatorFunction = (expected, candidate, path) => {
+    console.log("evaluate");
     const key = getHookKey(expected);
     if (!key) return expectNormal(expected, candidate, path);
 
@@ -232,6 +267,7 @@ export const makeCore = (hooks: PluginList, pluginSetups: MultiContext) => {
   };
 
   return {
-    evaluate,
+    evaluate: rootEvaluate,
+    peekContext,
   };
 };

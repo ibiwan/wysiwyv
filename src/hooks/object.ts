@@ -1,10 +1,10 @@
-import type { WysiwyvEvaluatorFunction } from "../type/engine";
-import type { HookValue } from "../type/template";
-import type { ContextObject, HookEnviron } from "../type/plugin";
-import type { WyvPlugin } from "../type/plugin";
-import { HookAssessor, type HookAssessment } from "../util/HookAssessment";
-import { errConfig, errMissing, errType } from "../util/HookError";
-import { isDefined, isObject, isPlainObject } from "../util/types";
+import type { WysiwyvEvaluatorFunction } from "../type/engine.js";
+import type { HookValue } from "../type/template.js";
+import type { ContextObject, HookEnviron } from "../type/plugin.js";
+import type { WyvPlugin } from "../type/plugin.js";
+import { HookAssessor, type HookAssessment } from "../util/HookAssessment.js";
+import { errConfig, errMissing, errType } from "../util/HookError.js";
+import { isDefined, isObject, isPlainObject } from "../util/types.js";
 
 export const WYV_KEY_OBJECT = "$object";
 export const WYV_KEY_PLAINOBJECT = "$plainobject";

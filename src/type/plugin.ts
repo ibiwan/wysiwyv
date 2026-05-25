@@ -1,7 +1,7 @@
-import type { WysiwyvEvaluatorFunction } from "./engine";
-import type { HookValue } from "./template";
+import type { WysiwyvEvaluatorFunction } from "./engine.js";
+import type { HookValue } from "./template.js";
 
-import type { HookAssessment } from "../util/HookAssessment";
+import type { HookAssessment } from "../util/HookAssessment.js";
 
 export type ContextObject = Record<string, unknown>;
 

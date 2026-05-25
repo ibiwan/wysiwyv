@@ -1,8 +1,14 @@
-import type { ContextObject } from "../type/plugin";
-import type { WyvPlugin } from "../type/plugin";
-import { HookAssessor } from "../util/HookAssessment";
-import { errAttr, errConfig, errType } from "../util/HookError";
-import { isArray, isDefined, isNumber, isObject, notNull } from "../util/types";
+import type { ContextObject } from "../type/plugin.js";
+import type { WyvPlugin } from "../type/plugin.js";
+import { HookAssessor } from "../util/HookAssessment.js";
+import { errAttr, errConfig, errType } from "../util/HookError.js";
+import {
+  isArray,
+  isDefined,
+  isNumber,
+  isObject,
+  notNull,
+} from "../util/types.js";
 
 export const WYV_KEY_ARRAY = "$array";
 export const WYV_ARRAY_PARAM_LENGTH = "$length";

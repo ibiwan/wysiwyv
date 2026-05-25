@@ -1,18 +1,18 @@
-import type { PluginList } from "../type/plugin";
+import type { PluginList } from "../type/plugin.js";
 
-import andWyvern from "./and";
-import anyWyvern from "./any";
-import arrayWyvern from "./array";
-import boolWyvern from "./bool";
-import datetimeWyvern from "./datetime";
-import emailWyvern from "./email";
-import intWyvern from "./int";
-import numberWyvern from "./number";
-import objectWyvern from "./object";
-import orWyvern from "./or";
-import stringWyvern from "./string";
-import uuidWyvern from "./uuid";
-import valWyvern from "./val";
+import andWyvern from "./and.js";
+import anyWyvern from "./any.js";
+import arrayWyvern from "./array.js";
+import boolWyvern from "./bool.js";
+import datetimeWyvern from "./datetime.js";
+import emailWyvern from "./email.js";
+import intWyvern from "./int.js";
+import numberWyvern from "./number.js";
+import objectWyvern from "./object.js";
+import orWyvern from "./or.js";
+import stringWyvern from "./string.js";
+import uuidWyvern from "./uuid.js";
+import valWyvern from "./val.js";
 
 export const defaultHooks: PluginList = [
   andWyvern,
@@ -29,3 +29,19 @@ export const defaultHooks: PluginList = [
   uuidWyvern,
   valWyvern,
 ];
+
+export {
+  andWyvern,
+  anyWyvern,
+  arrayWyvern,
+  boolWyvern,
+  datetimeWyvern,
+  emailWyvern,
+  intWyvern,
+  numberWyvern,
+  objectWyvern,
+  orWyvern,
+  stringWyvern,
+  uuidWyvern,
+  valWyvern,
+};

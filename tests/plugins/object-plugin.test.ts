@@ -11,8 +11,9 @@ describe("Object Type Plugin", () => {
   });
 
   const aDate = new Date();
-
   const aDateString = aDate.toISOString();
+
+  class Foo {}
 
   const OBJECTS: {
     val: unknown;
@@ -67,8 +68,8 @@ describe("Object Type Plugin", () => {
       isFullObject: true,
     },
     {
-      val: class Foo {},
-      repr: "class Foo {\n      }",
+      val: Foo,
+      repr: "class Foo {\n  }",
       isPlainObject: false,
       isFullObject: false,
     },
@@ -80,7 +81,7 @@ describe("Object Type Plugin", () => {
     },
   ];
 
-  test.each(OBJECTS)("Handles simpleObject $repr", (row) => {
+  test.each(OBJECTS)("Handles plainObject $repr", (row) => {
     const { val, repr, isPlainObject } = row;
 
     const expected = { obj: "$plainobject" };

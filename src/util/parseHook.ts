@@ -1,6 +1,6 @@
-import type { HookValue } from "../type/template";
-import type { HookKey } from "../type/plugin";
-import { isPlainObject, isString } from "./types";
+import type { HookValue } from "../type/template.js";
+import type { HookKey } from "../type/plugin.js";
+import { isPlainObject, isString } from "./types.js";
 
 export const getHookKey = (val: HookValue): HookKey | null => {
   if (isString(val)) {
