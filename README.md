@@ -3,13 +3,17 @@
 
 # WYSIWYV
 
+- [Overview](#what-you-see-is-what-you-validate)
 - [Why You Wyv](#why-you-wyv)
 - [Included Plugins](#included-plugins)
 - [Make Your Own Plugins](#make-your-own-plugins)
 
 ## What You See is What You Validate
 
-### candidate data:
+Validation templates look like your data;  
+Plugins give you everything beyond static comparison.
+
+#### candidate data:
 
 ```json
 {
@@ -19,7 +23,7 @@
 }
 ```
 
-### validation template:
+#### validation template:
 
 ```json
 {
@@ -31,6 +35,8 @@
 
 ### plugins nest and compose:
 
+#### more complex data:
+
 ```js
 {
   dept: ["sales", "acquisitions"],
@@ -41,6 +47,8 @@
   ]
 }
 ```
+
+#### template with $array and $object plugins:
 
 ```js
 {
@@ -55,13 +63,15 @@
 }
 ```
 
-### success is simple:
+### Interpretation
+
+#### success is simple:
 
 ```js
 { success: true, errors: [] }
 ```
 
-### rejection is clear:
+#### rejection is clear:
 
 ```js
 {
@@ -148,4 +158,4 @@ Read the [Plugin Authoring Documentation](README-PLUGIN-AUTHORING.md)
 - [x] Distro Builds
 - [x] To Npm!
 - [x] Test Import Published
-- [ ] Reuse Instances
+- [x] Reuse Instances

@@ -1,6 +1,6 @@
-import { arrayWyvern } from "../dist/hooks";
-import { makeWysiwyv } from "../src/wysiwyv-core";
-import countWyvern from "./custom-plugins/count";
+import { arrayWyvern } from "../src/hooks/index.js";
+import { makeWysiwyv } from "../src/wysiwyv-core.js";
+import countWyvern from "./custom-plugins/count.js";
 
 describe("core should retain contexts if configured to", () => {
   it("loses context if unspecified", () => {

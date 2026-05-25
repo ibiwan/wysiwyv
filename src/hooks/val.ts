@@ -21,7 +21,7 @@ const valWyvern: WyvPlugin<WyvParams, WyvSetup, WyvContext> = {
     ) => {
       if (context.matches === undefined) {
         // initialize matches on first call
-        context.matches = setup ?? {};
+        context.matches = setup;
       }
 
       if (!(match in context.matches)) {

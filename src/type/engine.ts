@@ -1,5 +1,5 @@
 import type { HookValue } from "./template.js";
-import type { ContextObject, PluginList } from "./plugin.js";
+import type { ContextObject, HookHandler, PluginList } from "./plugin.js";
 import type { HookAssessment } from "../util/HookAssessment.js";
 
 export type MultiContext = Record<string, ContextObject>;
@@ -13,7 +13,7 @@ export type WysiwyvInternalContexts = {
   perHookSetups: MultiContext;
   perHookContexts: MultiContext;
   sharedContext: ContextObject;
-  handlerKeyCache: Map<string, Function>;
+  handlerKeyCache: Map<string, HookHandler>;
 };
 
 export type WysiwyvInstance = {

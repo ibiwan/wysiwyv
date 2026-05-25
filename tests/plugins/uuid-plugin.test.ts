@@ -161,4 +161,30 @@ describe("UUID Expected JSON Object", () => {
       },
     ]);
   });
+
+  test("invalid UUID version type", () => {
+    const expected = { id: { $uuid: "F" } };
+
+    const candidate = { id: "6ba7b810-9dad-11d1-80b4-00c04fd430c8" }; // v1 UUID
+
+    const result = wyv.validate(expected, candidate);
+
+    assertErrors(result, [
+      {
+        message:
+          "Type: Expected 'UUID of version 'F'', got value '6ba7b810-9dad-11d1-80b4-00c04fd430c8'",
+        path: ".id",
+      },
+    ]);
+  });
+
+  test("empty-object UUID version type", () => {
+    const expected = { id: { $uuid: {} } };
+
+    const candidate = { id: "6ba7b810-9dad-11d1-80b4-00c04fd430c8" }; // v1 UUID
+
+    const result = wyv.validate(expected, candidate);
+
+    assertSuccess(result);
+  });
 });

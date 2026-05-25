@@ -25,10 +25,14 @@ const BUNDLES = [
 ];
 
 async function testBundle({ name, url }) {
-  const res = await fetch(url);
+  const res = await fetch(url, { redirect: "follow" });
   if (!res.ok) {
     throw new Error(`HTTP ${res.status} from ${url}`);
   }
+
+  const versionFromUrl = res.url.match(/wysiwyv@([^/]+)\//)?.[1];
+  const versionFromHeader = res.headers.get("x-jsd-version");
+  const version = versionFromUrl ?? versionFromHeader ?? "unknown";
 
   const js = await res.text();
   if (!js.includes("makeWysiwyv")) {
@@ -50,6 +54,8 @@ async function testBundle({ name, url }) {
   if (!result.success) {
     throw new Error(`Basic validation failed: ${JSON.stringify(result)}`);
   }
+
+  return { version };
 }
 
 mkdirSync(tmpDir, { recursive: true });
@@ -59,8 +65,9 @@ let fail = 0;
 
 for (const bundle of BUNDLES) {
   try {
-    await testBundle(bundle);
-    console.log(`PASS cdn ${bundle.name}`);
+    const { version } = await testBundle(bundle);
+    bundle.version = version;
+    console.log(`PASS cdn ${bundle.name} (v${bundle.version})`);
     pass++;
   } catch (e) {
     console.log(`FAIL cdn ${bundle.name} — ${e.message}`);

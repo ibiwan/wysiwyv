@@ -316,4 +316,15 @@ describe("Simple Expected JSON Object", () => {
       },
     ]);
   });
+
+  it("should treat unrecognized $-strings as non-keys", () => {
+    const candidate = { $data: true };
+    const expected = { $data: false };
+
+    const result = wyv.validate(expected, candidate);
+
+    assertErrors(result, [
+      { message: "Value: Expected 'false', got 'true'", path: ".$data" },
+    ]);
+  });
 });

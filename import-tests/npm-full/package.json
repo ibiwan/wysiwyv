@@ -10,6 +10,6 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "wysiwyv": "^0.1.5"
+    "wysiwyv": "^0.1.7"
   }
 }

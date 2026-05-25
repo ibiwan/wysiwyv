@@ -37,7 +37,7 @@ import type {
 
 export const makeCore = (hooks: PluginList, pluginSetups: MultiContext) => {
   const perHookSetups: MultiContext = Object.freeze({ ...pluginSetups });
-  console.log("initializing context");
+
   const perHookContexts: MultiContext = {};
   const sharedContext: HookObject = {};
   const handlerKeyCache = new Map<HookKey, HookHandler>();
@@ -60,9 +60,7 @@ export const makeCore = (hooks: PluginList, pluginSetups: MultiContext) => {
     candidate,
     keepContext = false,
   ) => {
-    console.log({ keepContext });
     if (!keepContext) {
-      console.log("clearing context");
       clearObject(perHookContexts);
       clearObject(sharedContext);
     }
@@ -71,7 +69,6 @@ export const makeCore = (hooks: PluginList, pluginSetups: MultiContext) => {
   };
 
   const evaluate: WysiwyvEvaluatorFunction = (expected, candidate, path) => {
-    console.log("evaluate");
     const key = getHookKey(expected);
     if (!key) return expectNormal(expected, candidate, path);
 

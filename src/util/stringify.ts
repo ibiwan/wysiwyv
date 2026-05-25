@@ -18,6 +18,11 @@ export const repr = (val: unknown) => {
   if (val instanceof RegExp) return val.toString();
   if (val instanceof String) return val.toString();
 
+  if (typeof val === "function") {
+    const kind = String(val)[0] === "c" ? "class" : "function";
+    return val.name ? `${kind} ${val.name}` : `${kind} (anonymous)`;
+  }
+
   const label = isOddObject(val) ? getDetailedType(val) : "";
 
   let str;

@@ -14,6 +14,7 @@ describe("Object Type Plugin", () => {
   const aDateString = aDate.toISOString();
 
   class Foo {}
+  const anon = (() => () => {})(); // unwrap to strip inferred name
 
   const OBJECTS: {
     val: unknown;
@@ -69,13 +70,13 @@ describe("Object Type Plugin", () => {
     },
     {
       val: Foo,
-      repr: "class Foo {\n  }",
+      repr: "class Foo",
       isPlainObject: false,
       isFullObject: false,
     },
     {
-      val: () => {},
-      repr: "() => {}",
+      val: anon,
+      repr: "function (anonymous)",
       isPlainObject: false,
       isFullObject: false,
     },

@@ -272,4 +272,11 @@ describe("Expected Array in Object", () => {
       },
     ]);
   });
+
+  it("should treat an empty config object as plain array assertion", () => {
+    const expected = { arr: { $array: {} } };
+    const candidate = { arr: [1, 2, 3] };
+    const result = wyv.validate(expected, candidate);
+    assertSuccess(result);
+  });
 });
