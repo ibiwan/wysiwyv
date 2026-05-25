@@ -55,12 +55,12 @@
     "strict-cover": "npx jest --coverage",
     "clean": "rm -rf ./dist",
     "build": "tsc -p tsconfig.build.json",
-    "build-example": "bun build ./example.ts --minify --outdir ./dist && gzip -kf dist/example.js",
+    "build-example": "bun build ./example.ts --minify --outfile ./dist/example.min.js && gzip -kf ./dist/example.min.js",
     "build-full": "bun build ./src/wysiwyv.ts --minify --outfile ./dist/wysiwyv.min.js",
     "build-core": "bun build ./src/wysiwyv-core.ts --minify --outfile ./dist/wysiwyv-core.min.js",
     "build-cjs": "bun build ./src/wysiwyv.ts --format=cjs --outfile ./dist/wysiwyv.cjs && bun build ./src/wysiwyv-core.ts --format=cjs --outfile ./dist/wysiwyv-core.cjs && bun build ./src/hooks/index.ts --format=cjs --outfile ./dist/hooks/index.cjs",
     "check-output": "ls -l dist | tail -n +2 | awk '{printf \"%-18s %5s B\\n\", $9, $5}'",
-    "all": "bun run --sequential deps clean lint check test build build-full build-core build-cjs check-output && bun publish --dry-run"
+    "all": "bun run --sequential deps clean lint check test build build-full build-core build-cjs build-example check-output && bun publish --dry-run"
   },
   "sideEffects": false,
   "type": "module",
