@@ -1,0 +1,251 @@
+# Valid numbers
+- description: number validates 0
+  candidate: { num: 0 }
+  template: { num: "$number" }
+  expected: []
+- description: number validates -0
+  candidate: { num: -0 }
+  template: { num: "$number" }
+  expected: []
+- description: number validates 10
+  candidate: { num: 10 }
+  template: { num: "$number" }
+  expected: []
+- description: number validates -10
+  candidate: { num: -10 }
+  template: { num: "$number" }
+  expected: []
+- description: number validates 1.0
+  candidate: { num: 1.0 }
+  template: { num: "$number" }
+  expected: []
+- description: number validates -1.0
+  candidate: { num: -1.0 }
+  template: { num: "$number" }
+  expected: []
+- description: number validates 0.1
+  candidate: { num: 0.1 }
+  template: { num: "$number" }
+  expected: []
+- description: number validates -0.1
+  candidate: { num: -0.1 }
+  template: { num: "$number" }
+  expected: []
+- description: number validates MAX_SAFE_INTEGER
+  candidate: { num: 9007199254740991 }
+  template: { num: "$number" }
+  expected: []
+- description: number validates MIN_SAFE_INTEGER
+  candidate: { num: -9007199254740991 }
+  template: { num: "$number" }
+  expected: []
+- description: number validates MIN_VALUE
+  candidate: { num: 5e-324 }
+  template: { num: "$number" }
+  expected: []
+- description: number validates MAX_VALUE
+  candidate: { num: 1.7976931348623157e+308 }
+  template: { num: "$number" }
+  expected: []
+- description: number validates EPSILON
+  candidate: { num: 2.220446049250313e-16 }
+  template: { num: "$number" }
+  expected: []
+
+# Invalid numbers (YAML-native types)
+- description: number rejects string
+  candidate: { num: a }
+  template: { num: "$number" }
+  expected:
+    - code: incorrect-type
+      expected: number
+      candidate: a
+      path: [num]
+- description: number rejects boolean
+  candidate: { num: true }
+  template: { num: "$number" }
+  expected:
+    - code: incorrect-type
+      expected: number
+      candidate: "true"
+      path: [num]
+- description: number rejects object
+  candidate: { num: {} }
+  template: { num: "$number" }
+  expected:
+    - code: incorrect-type
+      expected: number
+      candidate: "{}"
+      path: [num]
+- description: number rejects array
+  candidate: { num: [] }
+  template: { num: "$number" }
+  expected:
+    - code: incorrect-type
+      expected: number
+      candidate: "[]"
+      path: [num]
+- description: number rejects null
+  candidate: { num: null }
+  template: { num: "$number" }
+  expected:
+    - code: incorrect-type
+      expected: number
+      candidate: "null"
+      path: [num]
+
+# Invalid numbers (placeholder types)
+- description: number rejects NaN
+  candidate: { num: __NAN__ }
+  template: { num: "$number" }
+  expected:
+    - code: incorrect-type
+      expected: number
+      candidate: __NAN__
+      path: [num]
+- description: number rejects negative infinity
+  candidate: { num: __NEG_INF__ }
+  template: { num: "$number" }
+  expected:
+    - code: incorrect-type
+      expected: number
+      candidate: __NEG_INF__
+      path: [num]
+- description: number rejects positive infinity
+  candidate: { num: __POS_INF__ }
+  template: { num: "$number" }
+  expected:
+    - code: incorrect-type
+      expected: number
+      candidate: __POS_INF__
+      path: [num]
+- description: number rejects symbol
+  candidate: { num: __SYMBOL__ }
+  template: { num: "$number" }
+  expected:
+    - code: incorrect-type
+      expected: number
+      candidate: __SYMBOL__
+      path: [num]
+- description: number rejects undefined
+  candidate: { num: __UNDEFINED__ }
+  template: { num: "$number" }
+  expected:
+    - code: incorrect-type
+      expected: number
+      candidate: __UNDEFINED__
+      path: [num]
+- description: number rejects bigint
+  candidate: { num: __BIGINT__ }
+  template: { num: "$number" }
+  expected:
+    - code: incorrect-type
+      expected: number
+      candidate: __BIGINT__
+      path: [num]
+- description: number rejects large bigint
+  candidate: { num: __BIGINT_LARGE__ }
+  template: { num: "$number" }
+  expected:
+    - code: incorrect-type
+      expected: number
+      candidate: __BIGINT_LARGE__
+      path: [num]
+
+# $number predicates ($min, $max, $lt, $gt)
+- description: "number 0 >= 0"
+  candidate: { num: 0 }
+  template: { num: { $number: { $min: 0 } } }
+  expected: []
+- description: "number -1 >= 0 fails"
+  candidate: { num: -1 }
+  template: { num: { $number: { $min: 0 } } }
+  expected:
+    - code: incorrect-attribute
+      key: "$number.$min"
+      expected: "≥0"
+      candidate: "-1"
+      path: [num]
+- description: "number 1 >= 0"
+  candidate: { num: 1 }
+  template: { num: { $number: { $min: 0 } } }
+  expected: []
+- description: "number 0 <= 0"
+  candidate: { num: 0 }
+  template: { num: { $number: { $max: 0 } } }
+  expected: []
+- description: "number -1 <= 0"
+  candidate: { num: -1 }
+  template: { num: { $number: { $max: 0 } } }
+  expected: []
+- description: "number 1 <= 0 fails"
+  candidate: { num: 1 }
+  template: { num: { $number: { $max: 0 } } }
+  expected:
+    - code: incorrect-attribute
+      key: "$number.$max"
+      expected: "≤0"
+      candidate: "1"
+      path: [num]
+- description: "number 0 in range [-1, 1]"
+  candidate: { num: 0 }
+  template: { num: { $number: { $min: -1, $max: 1 } } }
+  expected: []
+- description: "number -2 below range [-1, 1]"
+  candidate: { num: -2 }
+  template: { num: { $number: { $min: -1, $max: 1 } } }
+  expected:
+    - code: incorrect-attribute
+      key: "$number.$min"
+      expected: "≥-1"
+      candidate: "-2"
+      path: [num]
+- description: "number 2 above range [-1, 1]"
+  candidate: { num: 2 }
+  template: { num: { $number: { $min: -1, $max: 1 } } }
+  expected:
+    - code: incorrect-attribute
+      key: "$number.$max"
+      expected: "≤1"
+      candidate: "2"
+      path: [num]
+- description: "number 0 fails both min and max when inverted"
+  candidate: { num: 0 }
+  template: { num: { $number: { $min: 1, $max: -1 } } }
+  expected:
+    - code: incorrect-attribute
+      key: "$number.$min"
+      expected: "≥1"
+      candidate: "0"
+      path: [num]
+    - code: incorrect-attribute
+      key: "$number.$max"
+      expected: "≤-1"
+      candidate: "0"
+      path: [num]
+- description: "number 0 < 0 fails"
+  candidate: { num: 0 }
+  template: { num: { $number: { $lt: 0 } } }
+  expected:
+    - code: incorrect-attribute
+      key: "$number.$lt"
+      expected: "<0"
+      candidate: "0"
+      path: [num]
+- description: "number 0 < epsilon succeeds"
+  candidate: { num: 0 }
+  template: { num: { $number: { $lt: 2.220446049250313e-16 } } }
+  expected: []
+- description: "number 0 > 0 fails"
+  candidate: { num: 0 }
+  template: { num: { $number: { $gt: 0 } } }
+  expected:
+    - code: incorrect-attribute
+      key: "$number.$gt"
+      expected: ">0"
+      candidate: "0"
+      path: [num]
+- description: "number 0 > -epsilon succeeds"
+  candidate: { num: 0 }
+  template: { num: { $number: { $gt: -2.220446049250313e-16 } } }
+  expected: []

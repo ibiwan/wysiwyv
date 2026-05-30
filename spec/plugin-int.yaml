@@ -1,0 +1,241 @@
+# Valid integers
+- description: int validates 0
+  candidate: { int: 0 }
+  template: { int: "$int" }
+  expected: []
+- description: int validates -0
+  candidate: { int: -0 }
+  template: { int: "$int" }
+  expected: []
+- description: int validates 10
+  candidate: { int: 10 }
+  template: { int: "$int" }
+  expected: []
+- description: int validates -10
+  candidate: { int: -10 }
+  template: { int: "$int" }
+  expected: []
+- description: int validates 1
+  candidate: { int: 1 }
+  template: { int: "$int" }
+  expected: []
+- description: int validates -1
+  candidate: { int: -1 }
+  template: { int: "$int" }
+  expected: []
+- description: int validates MAX_SAFE_INTEGER
+  candidate: { int: 9007199254740991 }
+  template: { int: "$int" }
+  expected: []
+- description: int validates MIN_SAFE_INTEGER
+  candidate: { int: -9007199254740991 }
+  template: { int: "$int" }
+  expected: []
+- description: int validates MAX_VALUE
+  candidate: { int: 1.7976931348623157e+308 }
+  template: { int: "$int" }
+  expected: []
+
+# Invalid integers (YAML-native types)
+- description: int rejects MIN_VALUE (fractional)
+  candidate: { int: 5e-324 }
+  template: { int: "$int" }
+  expected:
+    - code: incorrect-type
+      expected: integer
+      candidate: "5e-324"
+      path: [int]
+- description: int rejects EPSILON
+  candidate: { int: 2.220446049250313e-16 }
+  template: { int: "$int" }
+  expected:
+    - code: incorrect-type
+      expected: integer
+      candidate: "2.220446049250313e-16"
+      path: [int]
+- description: int rejects -0.1
+  candidate: { int: -0.1 }
+  template: { int: "$int" }
+  expected:
+    - code: incorrect-type
+      expected: integer
+      candidate: "-0.1"
+      path: [int]
+- description: int rejects 0.1
+  candidate: { int: 0.1 }
+  template: { int: "$int" }
+  expected:
+    - code: incorrect-type
+      expected: integer
+      candidate: "0.1"
+      path: [int]
+- description: int rejects string
+  candidate: { int: a }
+  template: { int: "$int" }
+  expected:
+    - code: incorrect-type
+      expected: integer
+      candidate: a
+      path: [int]
+- description: int rejects boolean
+  candidate: { int: true }
+  template: { int: "$int" }
+  expected:
+    - code: incorrect-type
+      expected: integer
+      candidate: "true"
+      path: [int]
+- description: int rejects object
+  candidate: { int: {} }
+  template: { int: "$int" }
+  expected:
+    - code: incorrect-type
+      expected: integer
+      candidate: "{}"
+      path: [int]
+- description: int rejects array
+  candidate: { int: [] }
+  template: { int: "$int" }
+  expected:
+    - code: incorrect-type
+      expected: integer
+      candidate: "[]"
+      path: [int]
+- description: int rejects null
+  candidate: { int: null }
+  template: { int: "$int" }
+  expected:
+    - code: incorrect-type
+      expected: integer
+      candidate: "null"
+      path: [int]
+
+# Invalid integers (placeholder types)
+- description: int rejects NaN
+  candidate: { int: __NAN__ }
+  template: { int: "$int" }
+  expected:
+    - code: incorrect-type
+      expected: integer
+      candidate: __NAN__
+      path: [int]
+- description: int rejects negative infinity
+  candidate: { int: __NEG_INF__ }
+  template: { int: "$int" }
+  expected:
+    - code: incorrect-type
+      expected: integer
+      candidate: __NEG_INF__
+      path: [int]
+- description: int rejects positive infinity
+  candidate: { int: __POS_INF__ }
+  template: { int: "$int" }
+  expected:
+    - code: incorrect-type
+      expected: integer
+      candidate: __POS_INF__
+      path: [int]
+- description: int rejects symbol
+  candidate: { int: __SYMBOL__ }
+  template: { int: "$int" }
+  expected:
+    - code: incorrect-type
+      expected: integer
+      candidate: __SYMBOL__
+      path: [int]
+- description: int rejects undefined
+  candidate: { int: __UNDEFINED__ }
+  template: { int: "$int" }
+  expected:
+    - code: incorrect-type
+      expected: integer
+      candidate: __UNDEFINED__
+      path: [int]
+- description: int rejects bigint
+  candidate: { int: __BIGINT__ }
+  template: { int: "$int" }
+  expected:
+    - code: incorrect-type
+      expected: integer
+      candidate: __BIGINT__
+      path: [int]
+- description: int rejects large bigint
+  candidate: { int: __BIGINT_LARGE__ }
+  template: { int: "$int" }
+  expected:
+    - code: incorrect-type
+      expected: integer
+      candidate: __BIGINT_LARGE__
+      path: [int]
+
+# $int predicates ($min, $max)
+- description: "int 0 >= 0"
+  candidate: { int: 0 }
+  template: { int: { $int: { $min: 0 } } }
+  expected: []
+- description: "int -1 >= 0 fails"
+  candidate: { int: -1 }
+  template: { int: { $int: { $min: 0 } } }
+  expected:
+    - code: incorrect-attribute
+      key: "$int.$min"
+      expected: "≥0"
+      candidate: "-1"
+      path: [int]
+- description: "int 1 >= 0"
+  candidate: { int: 1 }
+  template: { int: { $int: { $min: 0 } } }
+  expected: []
+- description: "int 0 <= 0"
+  candidate: { int: 0 }
+  template: { int: { $int: { $max: 0 } } }
+  expected: []
+- description: "int -1 <= 0"
+  candidate: { int: -1 }
+  template: { int: { $int: { $max: 0 } } }
+  expected: []
+- description: "int 1 <= 0 fails"
+  candidate: { int: 1 }
+  template: { int: { $int: { $max: 0 } } }
+  expected:
+    - code: incorrect-attribute
+      key: "$int.$max"
+      expected: "≤0"
+      candidate: "1"
+      path: [int]
+- description: "int 0 in range [-1, 1]"
+  candidate: { int: 0 }
+  template: { int: { $int: { $min: -1, $max: 1 } } }
+  expected: []
+- description: "int -2 below range [-1, 1]"
+  candidate: { int: -2 }
+  template: { int: { $int: { $min: -1, $max: 1 } } }
+  expected:
+    - code: incorrect-attribute
+      key: "$int.$min"
+      expected: "≥-1"
+      candidate: "-2"
+      path: [int]
+- description: "int 2 above range [-1, 1]"
+  candidate: { int: 2 }
+  template: { int: { $int: { $min: -1, $max: 1 } } }
+  expected:
+    - code: incorrect-attribute
+      key: "$int.$max"
+      expected: "≤1"
+      candidate: "2"
+      path: [int]
+- description: "int 0 fails both min and max when inverted"
+  candidate: { int: 0 }
+  template: { int: { $int: { $min: 1, $max: -1 } } }
+  expected:
+    - code: incorrect-attribute
+      key: "$int.$min"
+      expected: "≥1"
+      candidate: "0"
+      path: [int]
+    - code: incorrect-attribute
+      key: "$int.$max"
+      expected: "≤-1"
+      candidate: "0"
+      path: [int]

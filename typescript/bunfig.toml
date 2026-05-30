@@ -1,0 +1,7 @@
+[test]
+root="tests"
+
+# coverage = true # Automatically runs coverage without needing the --coverage flag
+
+# Require 100% across lines, functions, and statements
+coverageThreshold = 1.0 

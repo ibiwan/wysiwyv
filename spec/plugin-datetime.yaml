@@ -1,0 +1,253 @@
+# $isodate (ISO 8601 extended format)
+- description: isodate rejects space separator with zone
+  candidate: { dt: "2020-12-09 16:09:53Z" }
+  template: { dt: "$isodate" }
+  expected:
+    - code: incorrect-type
+      expected: ISO 8601 date
+      candidate: "2020-12-09 16:09:53Z"
+      path: [dt]
+- description: isodate accepts T separator with offset
+  candidate: { dt: "2020-12-09T16:09:53-00:00" }
+  template: { dt: "$isodate" }
+  expected: []
+- description: isodate rejects basic format
+  candidate: { dt: "20201209T160953Z" }
+  template: { dt: "$isodate" }
+  expected:
+    - code: incorrect-type
+      expected: ISO 8601 date
+      candidate: "20201209T160953Z"
+      path: [dt]
+- description: isodate rejects no timezone
+  candidate: { dt: "2020-12-09T16:09:53" }
+  template: { dt: "$isodate" }
+  expected:
+    - code: incorrect-type
+      expected: ISO 8601 date
+      candidate: "2020-12-09T16:09:53"
+      path: [dt]
+- description: isodate rejects week date format
+  candidate: { dt: "2020-W49-3T16:09:53Z" }
+  template: { dt: "$isodate" }
+  expected:
+    - code: incorrect-type
+      expected: ISO 8601 date
+      candidate: "2020-W49-3T16:09:53Z"
+      path: [dt]
+- description: isodate rejects ordinal date format
+  candidate: { dt: "2020-344T16:09:53Z" }
+  template: { dt: "$isodate" }
+  expected:
+    - code: incorrect-type
+      expected: ISO 8601 date
+      candidate: "2020-344T16:09:53Z"
+      path: [dt]
+- description: isodate accepts lowercase t separator
+  candidate: { dt: "2020-12-09t16:09:53Z" }
+  template: { dt: "$isodate" }
+  expected: []
+- description: isodate accepts standard datetime
+  candidate: { dt: "2026-05-05T20:41:00Z" }
+  template: { dt: "$isodate" }
+  expected: []
+- description: isodate accepts negative offset
+  candidate: { dt: "2026-05-05T13:41:00-07:00" }
+  template: { dt: "$isodate" }
+  expected: []
+- description: isodate accepts milliseconds
+  candidate: { dt: "2026-05-05T20:41:00.123Z" }
+  template: { dt: "$isodate" }
+  expected: []
+- description: isodate accepts microseconds with offset
+  candidate: { dt: "2026-05-05T20:41:00.999999+00:00" }
+  template: { dt: "$isodate" }
+  expected: []
+- description: isodate accepts y2k eve
+  candidate: { dt: "1999-12-31T23:59:59Z" }
+  template: { dt: "$isodate" }
+  expected: []
+- description: isodate rejects boolean
+  candidate: { dt: false }
+  template: { dt: "$isodate" }
+  expected:
+    - code: incorrect-type
+      expected: ISO 8601 date
+      candidate: "false"
+      path: [dt]
+
+# $basicisodate (ISO 8601 basic format)
+- description: basicisodate rejects space separator
+  candidate: { dt: "2020-12-09 16:09:53Z" }
+  template: { dt: "$basicisodate" }
+  expected:
+    - code: incorrect-type
+      expected: Basic ISO 8601 date
+      candidate: "2020-12-09 16:09:53Z"
+      path: [dt]
+- description: basicisodate rejects extended with offset
+  candidate: { dt: "2020-12-09T16:09:53-00:00" }
+  template: { dt: "$basicisodate" }
+  expected:
+    - code: incorrect-type
+      expected: Basic ISO 8601 date
+      candidate: "2020-12-09T16:09:53-00:00"
+      path: [dt]
+- description: basicisodate accepts basic format
+  candidate: { dt: "20201209T160953Z" }
+  template: { dt: "$basicisodate" }
+  expected: []
+- description: basicisodate rejects no timezone
+  candidate: { dt: "2020-12-09T16:09:53" }
+  template: { dt: "$basicisodate" }
+  expected:
+    - code: incorrect-type
+      expected: Basic ISO 8601 date
+      candidate: "2020-12-09T16:09:53"
+      path: [dt]
+- description: basicisodate rejects week date
+  candidate: { dt: "2020-W49-3T16:09:53Z" }
+  template: { dt: "$basicisodate" }
+  expected:
+    - code: incorrect-type
+      expected: Basic ISO 8601 date
+      candidate: "2020-W49-3T16:09:53Z"
+      path: [dt]
+- description: basicisodate rejects ordinal date
+  candidate: { dt: "2020-344T16:09:53Z" }
+  template: { dt: "$basicisodate" }
+  expected:
+    - code: incorrect-type
+      expected: Basic ISO 8601 date
+      candidate: "2020-344T16:09:53Z"
+      path: [dt]
+- description: basicisodate rejects lowercase t extended
+  candidate: { dt: "2020-12-09t16:09:53Z" }
+  template: { dt: "$basicisodate" }
+  expected:
+    - code: incorrect-type
+      expected: Basic ISO 8601 date
+      candidate: "2020-12-09t16:09:53Z"
+      path: [dt]
+- description: basicisodate rejects standard extended
+  candidate: { dt: "2026-05-05T20:41:00Z" }
+  template: { dt: "$basicisodate" }
+  expected:
+    - code: incorrect-type
+      expected: Basic ISO 8601 date
+      candidate: "2026-05-05T20:41:00Z"
+      path: [dt]
+- description: basicisodate rejects negative offset extended
+  candidate: { dt: "2026-05-05T13:41:00-07:00" }
+  template: { dt: "$basicisodate" }
+  expected:
+    - code: incorrect-type
+      expected: Basic ISO 8601 date
+      candidate: "2026-05-05T13:41:00-07:00"
+      path: [dt]
+- description: basicisodate rejects milliseconds extended
+  candidate: { dt: "2026-05-05T20:41:00.123Z" }
+  template: { dt: "$basicisodate" }
+  expected:
+    - code: incorrect-type
+      expected: Basic ISO 8601 date
+      candidate: "2026-05-05T20:41:00.123Z"
+      path: [dt]
+- description: basicisodate rejects microseconds extended
+  candidate: { dt: "2026-05-05T20:41:00.999999+00:00" }
+  template: { dt: "$basicisodate" }
+  expected:
+    - code: incorrect-type
+      expected: Basic ISO 8601 date
+      candidate: "2026-05-05T20:41:00.999999+00:00"
+      path: [dt]
+- description: basicisodate rejects y2k eve extended
+  candidate: { dt: "1999-12-31T23:59:59Z" }
+  template: { dt: "$basicisodate" }
+  expected:
+    - code: incorrect-type
+      expected: Basic ISO 8601 date
+      candidate: "1999-12-31T23:59:59Z"
+      path: [dt]
+- description: basicisodate rejects boolean
+  candidate: { dt: false }
+  template: { dt: "$basicisodate" }
+  expected:
+    - code: incorrect-type
+      expected: Basic ISO 8601 date
+      candidate: "false"
+      path: [dt]
+
+# $strictisodate (RFC 3339)
+- description: strictisodate accepts space separator with zone
+  candidate: { dt: "2020-12-09 16:09:53Z" }
+  template: { dt: "$strictisodate" }
+  expected: []
+- description: strictisodate accepts T separator with offset
+  candidate: { dt: "2020-12-09T16:09:53-00:00" }
+  template: { dt: "$strictisodate" }
+  expected: []
+- description: strictisodate rejects basic format
+  candidate: { dt: "20201209T160953Z" }
+  template: { dt: "$strictisodate" }
+  expected:
+    - code: incorrect-type
+      expected: RFC 3339 date
+      candidate: "20201209T160953Z"
+      path: [dt]
+- description: strictisodate rejects no timezone
+  candidate: { dt: "2020-12-09T16:09:53" }
+  template: { dt: "$strictisodate" }
+  expected:
+    - code: incorrect-type
+      expected: RFC 3339 date
+      candidate: "2020-12-09T16:09:53"
+      path: [dt]
+- description: strictisodate rejects week date
+  candidate: { dt: "2020-W49-3T16:09:53Z" }
+  template: { dt: "$strictisodate" }
+  expected:
+    - code: incorrect-type
+      expected: RFC 3339 date
+      candidate: "2020-W49-3T16:09:53Z"
+      path: [dt]
+- description: strictisodate rejects ordinal date
+  candidate: { dt: "2020-344T16:09:53Z" }
+  template: { dt: "$strictisodate" }
+  expected:
+    - code: incorrect-type
+      expected: RFC 3339 date
+      candidate: "2020-344T16:09:53Z"
+      path: [dt]
+- description: strictisodate accepts lowercase t
+  candidate: { dt: "2020-12-09t16:09:53Z" }
+  template: { dt: "$strictisodate" }
+  expected: []
+- description: strictisodate accepts standard datetime
+  candidate: { dt: "2026-05-05T20:41:00Z" }
+  template: { dt: "$strictisodate" }
+  expected: []
+- description: strictisodate accepts negative offset
+  candidate: { dt: "2026-05-05T13:41:00-07:00" }
+  template: { dt: "$strictisodate" }
+  expected: []
+- description: strictisodate accepts milliseconds
+  candidate: { dt: "2026-05-05T20:41:00.123Z" }
+  template: { dt: "$strictisodate" }
+  expected: []
+- description: strictisodate accepts microseconds with offset
+  candidate: { dt: "2026-05-05T20:41:00.999999+00:00" }
+  template: { dt: "$strictisodate" }
+  expected: []
+- description: strictisodate accepts y2k eve
+  candidate: { dt: "1999-12-31T23:59:59Z" }
+  template: { dt: "$strictisodate" }
+  expected: []
+- description: strictisodate rejects boolean
+  candidate: { dt: false }
+  template: { dt: "$strictisodate" }
+  expected:
+    - code: incorrect-type
+      expected: RFC 3339 date
+      candidate: "false"
+      path: [dt]

@@ -1,0 +1,324 @@
+- description: BHAG Success
+  candidate: {
+    store_id: "a3f1b2c4-d5e6-7890-abcd-ef1234567890",
+    store_name: "Velodrome Supply Co.",
+    last_updated: "2026-05-07T14:32:00Z",
+    contact: {
+      email: "orders@velodromesupply.com",
+      phone: "619-555-0142",
+    },
+    departments: ["Bicycles", "Accessories", "Apparel"],
+    inventory: [
+      {
+        sku: "550e8400-e29b-41d4-a716-446655440000",
+        category: "bicycle",
+        name: "Apex Trail 29er",
+        in_stock: true,
+        quantity: 12,
+        price_usd: 1299.99,
+        added: "2025-11-15T08:00:00-08:00",
+        tags: ["mountain", "hardtail", "29er"],
+        specs: {
+          frame_material: "aluminum",
+          wheel_size_in: 29,
+          gears: 21,
+          weight_kg: 13.2,
+        },
+      },
+      {
+        sku: "6ba7b810-9dad-11d1-80b4-00c04fd430c8",
+        category: "accessory",
+        name: "Kryptonite New York Lock",
+        in_stock: true,
+        quantity: 47,
+        price_usd: 89.95,
+        added: "2026-05-15 23:09:59Z",
+        tags: ["security", "lock", "u-lock"],
+        specs: {
+          weight_kg: 1.4,
+          length_mm: 203,
+          security_rating: "gold",
+        },
+      },
+      {
+        sku: "6ba7b811-9dad-11d1-80b4-00c04fd430c8",
+        category: "apparel",
+        name: "Castelli Endurance Jersey",
+        in_stock: false,
+        quantity: 1,
+        price_usd: 139.0,
+        added: "2026-01-20T11:00:00-08:00",
+        tags: ["jersey", "road", "mens"],
+        specs: {
+          material: "polyester",
+          sizes_available: ["S", "M", "L", "XL"],
+          weight_kg: 0.18,
+        },
+      },
+    ],
+    manager: {
+      id: "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+      name: "Imelda Cruz",
+      email: "imelda@velodromesupply.com",
+      since: "20230601T080000Z",
+    },
+    audit: {
+      created_by: "sys-init",
+      record_id: "a3f1b2c4-d5e6-7890-abcd-ef1234567890",
+      version: 8,
+      confirmed: true,
+      lawsuits: null,
+    },
+    locations: [
+      { store: "0000", id: "00000000-0000-0000-0000-000000000000" },
+      { store: 1111, id: "14154bce-50f1-11f1-ab07-0242ac120002" },
+      { store: 4444, id: "5e39add7-9371-44ad-9a1e-5aeab239c767" },
+      { store: 7777, id: "019e2f7d-7bbd-749a-9fdf-fb0464d123e0" },
+      { store: "FFFF", id: "ffffffff-ffff-ffff-ffff-ffffffffffff" },
+    ],
+  }
+  template: {
+    store_id: { $and: ["$uuid", { $val: "store_ref" }] },
+    store_name: "Velodrome Supply Co.",
+    last_updated: { $and: ["$isodate", "$any"] },
+    contact: {
+      email: "$email",
+      phone: "619-555-0142",
+    },
+    inventory: {
+      $array: {
+        $minlength: 1,
+        $each: {
+          sku: { $and: ["$uuid", "$string"] },
+          category: "$string",
+          name: "$string",
+          in_stock: "$bool",
+          quantity: { $int: { $min: 1 } },
+          price_usd: "$number",
+          added: { $or: ["$isodate", "$strictisodate"] },
+          tags: {
+            $array: {
+              $minlength: 1,
+              $each: "$string",
+            },
+          },
+          specs: {
+            $and: [
+              {
+                $object: { $partial: { weight_kg: "$number" } },
+              },
+              {
+                $plainobject: {
+                  $eachElement: {
+                    $or: ["$number", "$string", { $array: "$string" }],
+                  },
+                },
+              },
+            ],
+          },
+        },
+      },
+    },
+    manager: {
+      id: "$uuid",
+      name: "$string",
+      email: "$email",
+      since: "$basicisodate",
+    },
+    audit: {
+      created_by: "$string",
+      record_id: { $val: "store_ref" },
+      version: 8,
+      confirmed: true,
+      lawsuits: null,
+    },
+    departments: {
+      $and: [
+        { $array: "$string" },                  # each element is a string
+        ["Bicycles", "Accessories", "Apparel"], # exact tuple
+      ],
+    },
+    locations: [
+      { $object: { $partial: { id: { $uuid: 0 } } } },
+      { $object: { $partial: { id: { $uuid: 1 } } } },
+      { $object: { $partial: { id: { $uuid: 4 } } } },
+      { $object: { $partial: { id: { $uuid: 7 } } } },
+      { $object: { $partial: { id: { $uuid: "F" } } } },
+    ],
+  }
+  expected: []
+- description: BHAG Core, Failures
+  candidate: {
+    a: "a",
+    b: false,
+    c: "no",
+    d: false,
+    e: -1,
+    f: "no",
+    g: true,
+    h: "something",
+    i: false,
+    j: [-1, -2],
+    k: [1, 2],
+    l: .nan,
+    m: { a: 1, c: 3 },
+  }
+  template: {
+    a: .nan,
+    b: "b",
+    c: "c",
+    d: 4,
+    e: 5,
+    f: false,
+    g: false,
+    h: null,
+    i: [],
+    j: [10],
+    k: [1, 2, 3],
+    l: {},
+    m: { a: 1, b: 2 },
+  }
+  expected:
+    - code: invalid-config
+      message: "Unsupported value type in expected object: 'NaN'"
+      path: [a]
+    - code: incorrect-type
+      expected: "string"
+      candidate: "false"
+      path: [b]
+    - code: incorrect-value
+      expected: "c"
+      candidate: "no"
+      path: [c]
+    - code: incorrect-type
+      expected: "number"
+      candidate: "false"
+      path: [d]
+    - code: incorrect-value
+      expected: "5"
+      candidate: "-1"
+      path: [e]
+    - code: incorrect-type
+      expected: "boolean"
+      candidate: "no"
+      path: [f]
+    - code: incorrect-value
+      expected: "false"
+      candidate: "true"
+      path: [g]
+    - code: incorrect-type
+      expected: "null"
+      candidate: "something"
+      path: [h]
+    - code: incorrect-type
+      expected: "array"
+      candidate: "false"
+      path: [i]
+    - code: incorrect-attribute
+      key: "Array length"
+      expected: "1"
+      candidate: "2"
+      path: [j]
+    - code: incorrect-value
+      expected: "10"
+      candidate: "-1"
+      path: [j, 0]
+    - code: incorrect-attribute
+      key: "Array length"
+      expected: "3"
+      candidate: "2"
+      path: [k]
+    - code: missing-element
+      key: "index 2"
+      expected: "3"
+      path: [k, 2]
+    - code: incorrect-type
+      expected: "object"
+      candidate: "NaN"
+      path: [l]
+    - code: missing-element
+      key: "b"
+      expected: "2"
+      path: [m, b]
+    - code: unexpected-element
+      key: "c"
+      candidate: "3"
+      path: [m, c]
+- description: BHAG Plugins, Failures
+  candidate: {
+    a: "a",
+    b: "b",
+    c: "c",
+    d: [1, 2, 3],
+    e: [1, 2, 3],
+    f: false,
+    g: -1,
+    h: "emailathostdotdomain",
+  }
+  template: {
+    a: { $and: "not-an-array" },
+    b: { $and: ["$string", "$number"] },
+    c: "$array",
+    d: { $array: { $length: 3, $purple: true } },
+    e: { $array: { $length: 4, $minlength: 4, $maxlength: 2 } },
+    f: { $and: ["$isodate", "$basicisodate", "$strictisodate"] },
+    g: "$email",
+    h: "$email",
+  }
+  expected: 
+    - code: invalid-config
+      message: "$and value should be an array of templates"
+      path: [a]
+    - code: incorrect-aggregate
+      key: "$and"
+      path: [b]
+    - code: incorrect-type
+      expected: "number"
+      candidate: "b"
+      path: [b]
+    - code: incorrect-type
+      expected: "array"
+      candidate: "c"
+      path: [c]
+    - code: invalid-config
+      message: "Ignored unknown $array parameters: '$purple'"
+      path: [d]
+    - code: incorrect-attribute
+      key: "$array.$length"
+      expected: "4"
+      candidate: "3"
+      path: [e]
+    - code: incorrect-attribute
+      key: "$array.$minlength"
+      expected: "4"
+      candidate: "3"
+      path: [e] 
+    - code: incorrect-attribute
+      key: "$array.$maxlength"
+      expected: "2"
+      candidate: "3"
+      path: [e]
+    - code: incorrect-aggregate
+      key: "$and"
+      path: [f]
+    - code: incorrect-type
+      expected: "ISO 8601 date"
+      candidate: "false"
+      path: [f]
+    - code: incorrect-type
+      expected: "Basic ISO 8601 date"
+      candidate: "false"
+      path: [f]
+    - code: incorrect-type
+      expected: "RFC 3339 date"
+      candidate: "false"
+      path: [f]
+    - code: incorrect-type
+      expected: "string"
+      candidate: "-1"
+      path: [g]
+    - code: incorrect-type
+      expected: "valid email address"
+      candidate: "emailathostdotdomain"
+      path: [h]
+  

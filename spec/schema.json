@@ -1,0 +1,58 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": [
+      "description",
+      "candidate",
+      "template",
+      "expected"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "description": {
+        "type": "string"
+      },
+      "candidate": {},
+      "template": {},
+      "expected": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "code",
+            "path"
+          ],
+          "additionalProperties": true,
+          "properties": {
+            "code": {
+              "type": "string",
+              "enum": [
+                "unexpected-element",
+                "missing-element",
+                "incorrect-value",
+                "unmatched-value",
+                "incorrect-type",
+                "incorrect-attribute",
+                "incorrect-aggregate",
+                "invalid-config"
+              ]
+            },
+            "path": {
+              "type": "array",
+              "items": {
+                "type": [
+                  "string",
+                  "integer"
+                ]
+              }
+            },
+            "candidate": {},
+            "template": {}
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,82 @@
+# Valid UUIDs
+- description: valid generic UUID
+  candidate: { id: "123e4567-e89b-12d3-a456-426614174000" }
+  template: { id: "$uuid" }
+  expected: []
+- description: valid NIL UUID
+  candidate: { id: "00000000-0000-0000-0000-000000000000" }
+  template: { id: { $uuid: 0 } }
+  expected: []
+- description: valid FFF UUID
+  candidate: { id: "ffffffff-ffff-ffff-ffff-ffffffffffff" }
+  template: { id: { $uuid: "F" } }
+  expected: []
+- description: valid UUID v1
+  candidate: { id: "6ba7b810-9dad-11d1-80b4-00c04fd430c8" }
+  template: { id: { $uuid: 1 } }
+  expected: []
+- description: valid UUID v2
+  candidate: { id: "6ba7b812-9dad-21d1-80b4-00c04fd430c8" }
+  template: { id: { $uuid: 2 } }
+  expected: []
+- description: valid UUID v3
+  candidate: { id: "6ba7b814-9dad-31d1-80b4-00c04fd430c8" }
+  template: { id: { $uuid: 3 } }
+  expected: []
+- description: valid UUID v4
+  candidate: { id: "123e4567-e89b-42d3-a456-426614174000" }
+  template: { id: { $uuid: 4 } }
+  expected: []
+- description: valid UUID v5
+  candidate: { id: "6ba7b816-9dad-51d1-80b4-00c04fd430c8" }
+  template: { id: { $uuid: 5 } }
+  expected: []
+- description: valid UUID v6
+  candidate: { id: "6ba7b817-9dad-61d1-80b4-00c04fd430c8" }
+  template: { id: { $uuid: 6 } }
+  expected: []
+- description: valid UUID v7
+  candidate: { id: "6ba7b818-9dad-71d1-80b4-00c04fd430c8" }
+  template: { id: { $uuid: 7 } }
+  expected: []
+- description: valid UUID v8
+  candidate: { id: "6ba7b819-9dad-81d1-80b4-00c04fd430c8" }
+  template: { id: { $uuid: 8 } }
+  expected: []
+- description: empty-object UUID version treats as generic
+  candidate: { id: "6ba7b810-9dad-11d1-80b4-00c04fd430c8" }
+  template: { id: { $uuid: {} } }
+  expected: []
+
+# Invalid UUIDs
+- description: invalid UUID format
+  candidate: { id: invalid-uuid }
+  template: { id: "$uuid" }
+  expected:
+    - code: incorrect-type
+      expected: UUID
+      candidate: invalid-uuid
+      path: [id]
+- description: invalid UUID version number
+  candidate: { id: "6ba7b810-9dad-11d1-80b4-00c04fd430c8" }
+  template: { id: { $uuid: 40 } }
+  expected:
+    - code: invalid-config
+      message: "Unknown UUID version: '40'"
+      path: [id]
+- description: non-string UUID candidate
+  candidate: { id: 1241245 }
+  template: { id: "$uuid" }
+  expected:
+    - code: incorrect-type
+      expected: string
+      candidate: "1241245"
+      path: [id]
+- description: UUID version mismatch
+  candidate: { id: "6ba7b810-9dad-11d1-80b4-00c04fd430c8" }
+  template: { id: { $uuid: "F" } }
+  expected:
+    - code: incorrect-type
+      expected: "UUID of version 'F'"
+      candidate: "6ba7b810-9dad-11d1-80b4-00c04fd430c8"
+      path: [id]

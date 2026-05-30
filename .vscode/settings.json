@@ -1,3 +1,6 @@
 {
-  "folder-color.pathColors": []
+  "folder-color.pathColors": [],
+  "yaml.schemas": {
+    "./spec/schema.json": "spec/**/*.yaml"
+  }
 }

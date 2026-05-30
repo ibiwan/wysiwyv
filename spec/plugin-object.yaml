@@ -1,0 +1,226 @@
+# $plainobject type discrimination
+- description: plainobject accepts empty object
+  candidate: { obj: {} }
+  template: { obj: "$plainobject" }
+  expected: []
+- description: plainobject accepts simple object
+  candidate: { obj: { a: b } }
+  template: { obj: "$plainobject" }
+  expected: []
+- description: plainobject accepts null-prototype object
+  candidate: { obj: __NULL_PROTO__ }
+  template: { obj: "$plainobject" }
+  expected: []
+- description: plainobject rejects null
+  candidate: { obj: null }
+  template: { obj: "$plainobject" }
+  expected:
+    - code: incorrect-type
+      expected: plainobject
+      candidate: "null"
+      path: [obj]
+- description: plainobject rejects array
+  candidate: { obj: [] }
+  template: { obj: "$plainobject" }
+  expected:
+    - code: incorrect-type
+      expected: plainobject
+      candidate: "[]"
+      path: [obj]
+- description: plainobject rejects date
+  candidate: { obj: __DATE__ }
+  template: { obj: "$plainobject" }
+  expected:
+    - code: incorrect-type
+      expected: plainobject
+      candidate: __DATE__
+      path: [obj]
+- description: plainobject rejects regex
+  candidate: { obj: __REGEX__ }
+  template: { obj: "$plainobject" }
+  expected:
+    - code: incorrect-type
+      expected: plainobject
+      candidate: __REGEX__
+      path: [obj]
+- description: plainobject rejects boxed string
+  candidate: { obj: __BOXED_STRING__ }
+  template: { obj: "$plainobject" }
+  expected:
+    - code: incorrect-type
+      expected: plainobject
+      candidate: __BOXED_STRING__
+      path: [obj]
+- description: plainobject rejects map
+  candidate: { obj: __MAP__ }
+  template: { obj: "$plainobject" }
+  expected:
+    - code: incorrect-type
+      expected: plainobject
+      candidate: __MAP__
+      path: [obj]
+- description: plainobject rejects set
+  candidate: { obj: __SET__ }
+  template: { obj: "$plainobject" }
+  expected:
+    - code: incorrect-type
+      expected: plainobject
+      candidate: __SET__
+      path: [obj]
+- description: plainobject rejects class
+  candidate: { obj: __CLASS__ }
+  template: { obj: "$plainobject" }
+  expected:
+    - code: incorrect-type
+      expected: plainobject
+      candidate: __CLASS__
+      path: [obj]
+- description: plainobject rejects anonymous function
+  candidate: { obj: __ANON_FN__ }
+  template: { obj: "$plainobject" }
+  expected:
+    - code: incorrect-type
+      expected: plainobject
+      candidate: __ANON_FN__
+      path: [obj]
+
+# $object type discrimination
+- description: object accepts empty object
+  candidate: { obj: {} }
+  template: { obj: "$object" }
+  expected: []
+- description: object accepts simple object
+  candidate: { obj: { a: b } }
+  template: { obj: "$object" }
+  expected: []
+- description: object accepts null-prototype object
+  candidate: { obj: __NULL_PROTO__ }
+  template: { obj: "$object" }
+  expected: []
+- description: object accepts date
+  candidate: { obj: __DATE__ }
+  template: { obj: "$object" }
+  expected: []
+- description: object accepts regex
+  candidate: { obj: __REGEX__ }
+  template: { obj: "$object" }
+  expected: []
+- description: object accepts boxed string
+  candidate: { obj: __BOXED_STRING__ }
+  template: { obj: "$object" }
+  expected: []
+- description: object accepts map
+  candidate: { obj: __MAP__ }
+  template: { obj: "$object" }
+  expected: []
+- description: object accepts set
+  candidate: { obj: __SET__ }
+  template: { obj: "$object" }
+  expected: []
+- description: object rejects null
+  candidate: { obj: null }
+  template: { obj: "$object" }
+  expected:
+    - code: incorrect-type
+      expected: object
+      candidate: "null"
+      path: [obj]
+- description: object rejects array
+  candidate: { obj: [] }
+  template: { obj: "$object" }
+  expected:
+    - code: incorrect-type
+      expected: object
+      candidate: "[]"
+      path: [obj]
+- description: object rejects class
+  candidate: { obj: __CLASS__ }
+  template: { obj: "$object" }
+  expected:
+    - code: incorrect-type
+      expected: object
+      candidate: __CLASS__
+      path: [obj]
+- description: object rejects anonymous function
+  candidate: { obj: __ANON_FN__ }
+  template: { obj: "$object" }
+  expected:
+    - code: incorrect-type
+      expected: object
+      candidate: __ANON_FN__
+      path: [obj]
+
+# $object configuration validation
+- description: validates entire value of an object, allow extra keys
+  template: { obj: { $object: { $partial: { a: b, c: d } } } }
+  candidate: { obj: { a: b, c: d, e: f } }
+  expected: []
+- description: validates expected $partial is reasonable
+  template: { obj: { $object: { $partial: not an object } } }
+  candidate: { obj: { a: b, c: d, e: f } }
+  expected:
+    - code: invalid-config
+      message: "$object.$partial option should be an object"
+      path: [obj]
+- description: rejects non-plain object for $partial
+  candidate: { obj: __MAP__ }
+  template: { obj: { $object: { $partial: {} } } }
+  expected:
+    - code: incorrect-type
+      expected: "plainobject for $partial"
+      candidate: __MAP__
+      path: [obj]
+- description: rejects non-plain object for $eachElement
+  candidate: { obj: __MAP__ }
+  template: { obj: { $object: { $eachElement: {} } } }
+  expected:
+    - code: incorrect-type
+      expected: "plainobject for $eachElement"
+      candidate: __MAP__
+      path: [obj]
+- description: validates no unexpected config
+  template: { obj: { $object: { $reverseObject: no idea, $arrayLength: 2 } } }
+  candidate: { obj: { a: b, c: d, e: f } }
+  expected:
+    - code: invalid-config
+      message: "Unexpected $object parameters: $reverseObject,$arrayLength"
+      path: [obj]
+- description: validates no conflicting config
+  template: { obj: { $object: { $partial: no idea, $eachElement: 2 } } }
+  candidate: { obj: { a: b, c: d, e: f } }
+  expected:
+    - code: invalid-config
+      message: "$object options can specify $partial or $eachElement but not both"
+      path: [obj]
+- description: validates partial value of an object, rejects missing keys
+  template: { obj: { $object: { $partial: { a: b, c: d } } } }
+  candidate: { obj: { a: b } }
+  expected:
+    - code: missing-element
+      key: c
+      expected: d
+      path: [obj, c]
+- description: checks each value of an object, string
+  template: { obj: { $object: { $eachElement: "$string" } } }
+  candidate: { obj: { a: b, c: d, e: f } }
+  expected: []
+- description: checks each value of an object, string, rejects
+  template: { obj: { $object: { $eachElement: "$string" } } }
+  candidate: { obj: { a: b, c: 3, e: f } }
+  expected:
+    - code: incorrect-type
+      expected: string
+      candidate: "3"
+      path: [obj, c]
+- description: checks each value of an object, nested
+  template: { obj: { $object: { $eachElement: { $array: { $length: 2 } } } } }
+  candidate: { obj: { a: [1, 2], b: [a, b], q: [true, false] } }
+  expected: []
+- description: checks each value of an object, nested, rejects
+  template: { obj: { $object: { $eachElement: { $array: { $length: 2 } } } } }
+  candidate: { obj: { a: [1, 2], b: abcdef, q: [true, false] } }
+  expected:
+    - code: incorrect-type
+      expected: array
+      candidate: abcdef
+      path: [obj, b]

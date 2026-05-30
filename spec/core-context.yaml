@@ -1,0 +1,60 @@
+# Context retention across multiple validate calls.
+#
+# The `count` test plugin increments both its per-hook context and the
+# shared context on every element it processes.  These tests verify
+# that context is reset or preserved between calls depending on the
+# `keepContext` option.
+#
+# Requires test-fixture plugin: count
+
+- description: loses context if unspecified
+  plugins: [count]
+  steps:
+    - candidate: [10, 9, 8, 7]
+      template: { $array: { $each: "$count" } }
+      expected: []
+      context:
+        shared: { count: 4 }
+        perHook: { $count: { count: 4 } }
+    - candidate: [10, 9, 8, 7]
+      template: { $array: { $each: "$count" } }
+      expected: []
+      context:
+        shared: { count: 4 }
+        perHook: { $count: { count: 4 } }
+
+- description: loses context if keepContext false
+  plugins: [count]
+  steps:
+    - candidate: [10, 9, 8, 7]
+      template: { $array: { $each: "$count" } }
+      options: { keepContext: false }
+      expected: []
+      context:
+        shared: { count: 4 }
+        perHook: { $count: { count: 4 } }
+    - candidate: [10, 9, 8, 7]
+      template: { $array: { $each: "$count" } }
+      options: { keepContext: false }
+      expected: []
+      context:
+        shared: { count: 4 }
+        perHook: { $count: { count: 4 } }
+
+- description: keeps context if keepContext true
+  plugins: [count]
+  steps:
+    - candidate: [10, 9, 8, 7]
+      template: { $array: { $each: "$count" } }
+      options: { keepContext: true }
+      expected: []
+      context:
+        shared: { count: 4 }
+        perHook: { $count: { count: 4 } }
+    - candidate: [10, 9, 8, 7]
+      template: { $array: { $each: "$count" } }
+      options: { keepContext: true }
+      expected: []
+      context:
+        shared: { count: 8 }
+        perHook: { $count: { count: 8 } }

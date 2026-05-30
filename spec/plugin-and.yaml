@@ -1,0 +1,56 @@
+- description: and succeeds on no predicates
+  candidate: { number: 1 }
+  template: { number: { $and: [] } }
+  expected: []
+- description: and succeeds on a single true predicate
+  candidate: { number: 1 }
+  template: { number: { $and: ["$number"] } }
+  expected: []
+- description: and succeeds on multiple true predicates
+  candidate: { someId: "d48ad255-1623-4998-8b27-d0420fe5f835" }
+  template: { someId: { $and: ["$string", "$uuid"] } }
+  expected: []
+- description: and fails on a single false predicate (latter)
+  candidate: { name: George }
+  template: { name: { $and: ["$string", "$uuid"] } }
+  expected:
+    - code: incorrect-aggregate
+      key: "$and"
+      path: [name]
+    - code: incorrect-type
+      expected: UUID
+      candidate: George
+      path: [name]
+- description: and fails on a single false predicate (former)
+  candidate: { name: George }
+  template: { name: { $and: ["$uuid", "$string"] } }
+  expected:
+    - code: incorrect-aggregate
+      key: "$and"
+      path: [name]
+    - code: incorrect-type
+      expected: UUID
+      candidate: George
+      path: [name]
+- description: and reports multiple fails
+  candidate: { name: George }
+  template: { name: { $and: ["$uuid", "$number"] } }
+  expected:
+    - code: incorrect-aggregate
+      key: "$and"
+      path: [name]
+    - code: incorrect-type
+      expected: UUID
+      candidate: George
+      path: [name]
+    - code: incorrect-type
+      expected: number
+      candidate: George
+      path: [name]
+- description: and rejects malformed parameters
+  candidate: { name: Purple }
+  template: { name: { $and: "$string" } }
+  expected:
+    - code: invalid-config
+      message: "$and value should be an array of templates"
+      path: [name]

@@ -1,0 +1,140 @@
+# $array type checking
+- description: pass when an array is an array
+  template: { arr: "$array" }
+  candidate: { arr: [a] }
+  expected: []
+- description: fail when an array is not an array
+  template: { arr: "$array" }
+  candidate: { arr: a }
+  expected:
+    - code: incorrect-type
+      expected: array
+      candidate: a
+      path: [arr]
+- description: treat an empty config object as plain array assertion
+  template: { arr: { $array: {} } }
+  candidate: { arr: [1, 2, 3] }
+  expected: []
+
+# $array.$length
+- description: pass when an array has the exact length
+  template: { arr: { $array: { $length: 4 } } }
+  candidate: { arr: [a, b, c, d] }
+  expected: []
+- description: fail when an array is too short for fixed length
+  template: { arr: { $array: { $length: 4 } } }
+  candidate: { arr: [a, b, c] }
+  expected:
+    - code: incorrect-attribute
+      key: "$array.$length"
+      expected: "4"
+      candidate: "3"
+      path: [arr]
+- description: fail when an array is too long for fixed length
+  template: { arr: { $array: { $length: 3 } } }
+  candidate: { arr: [a, b, c, d] }
+  expected:
+    - code: incorrect-attribute
+      key: "$array.$length"
+      expected: "3"
+      candidate: "4"
+      path: [arr]
+
+# $array.$minlength
+- description: pass when array is at minimum length
+  template: { arr: { $array: { $minlength: 4 } } }
+  candidate: { arr: [a, b, c, d] }
+  expected: []
+- description: pass when array is above minimum length
+  template: { arr: { $array: { $minlength: 3 } } }
+  candidate: { arr: [a, b, c, d] }
+  expected: []
+- description: fail when array is below minimum length
+  template: { arr: { $array: { $minlength: 5 } } }
+  candidate: { arr: [a, b, c, d] }
+  expected:
+    - code: incorrect-attribute
+      key: "$array.$minlength"
+      expected: "5"
+      candidate: "4"
+      path: [arr]
+
+# $array.$maxlength
+- description: pass when array is at maximum length
+  template: { arr: { $array: { $maxlength: 4 } } }
+  candidate: { arr: [a, b, c, d] }
+  expected: []
+- description: pass when array is below maximum length
+  template: { arr: { $array: { $maxlength: 5 } } }
+  candidate: { arr: [a, b, c, d] }
+  expected: []
+- description: fail when array is above maximum length
+  template: { arr: { $array: { $maxlength: 3 } } }
+  candidate: { arr: [a, b, c, d] }
+  expected:
+    - code: incorrect-attribute
+      key: "$array.$maxlength"
+      expected: "3"
+      candidate: "4"
+      path: [arr]
+
+# $array config validation
+- description: fail on unknown parameters mixed with known ones
+  template: { arr: { $array: { $minlength: 4, $purpleLength: 22 } } }
+  candidate: { arr: [a, b, c, d] }
+  expected:
+    - code: invalid-config
+      message: "Ignored unknown $array parameters: '$purpleLength'"
+      path: [arr]
+
+# $array.$each (explicit)
+- description: pass when array matches explicit each shape
+  template: { arr: { $array: { $each: { a: 1, b: { $val: shared } } } } }
+  candidate: { arr: [{ a: 1, b: purple }, { a: 1, b: purple }, { a: 1, b: purple }] }
+  expected: []
+- description: fail when array does not match explicit each shape
+  template: { arr: { $array: { $each: { a: 1, b: { $val: shared } } } } }
+  candidate: { arr: [{ a: 1, b: purple }, { a: 1, b: puiple }, { a: 1, b: puople }] }
+  expected:
+    - code: unmatched-value
+      key: shared
+      expected: purple
+      candidate: puiple
+      path: [arr, 1, b]
+    - code: unmatched-value
+      key: shared
+      expected: purple
+      candidate: puople
+      path: [arr, 2, b]
+
+# $array implicit each (config object without $each key)
+- description: pass when array matches implicit each shape
+  template: { arr: { $array: { a: 1, b: { $val: shared } } } }
+  candidate: { arr: [{ a: 1, b: purple }, { a: 1, b: purple }, { a: 1, b: purple }] }
+  expected: []
+- description: fail when array does not match implicit each non-object value
+  template: { arr: { $array: "I've told you thrice" } }
+  candidate: { arr: ["I've told you twice", "I've told you twice"] }
+  expected:
+    - code: incorrect-value
+      expected: "I've told you thrice"
+      candidate: "I've told you twice"
+      path: [arr, 0]
+    - code: incorrect-value
+      expected: "I've told you thrice"
+      candidate: "I've told you twice"
+      path: [arr, 1]
+- description: fail when array does not match implicit each shape
+  template: { arr: { $array: { a: 1, b: { $val: shared } } } }
+  candidate: { arr: [{ a: 1, b: purple }, { a: 1, b: puiple }, { a: 1, b: puople }] }
+  expected:
+    - code: unmatched-value
+      key: shared
+      expected: purple
+      candidate: puiple
+      path: [arr, 1, b]
+    - code: unmatched-value
+      key: shared
+      expected: purple
+      candidate: puople
+      path: [arr, 2, b]

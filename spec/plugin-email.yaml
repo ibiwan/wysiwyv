@@ -1,0 +1,99 @@
+# Valid emails
+- description: validates simple email
+  candidate: { e: "simple@example.com" }
+  template: { e: "$email" }
+  expected: []
+- description: validates subdomain email
+  candidate: { e: "dev.archery@guild.org.uk" }
+  template: { e: "$email" }
+  expected: []
+- description: validates plus-tagged email
+  candidate: { e: "user+extra@gmail.com" }
+  template: { e: "$email" }
+  expected: []
+- description: validates numeric local part
+  candidate: { e: "1234567890@example.com" }
+  template: { e: "$email" }
+  expected: []
+- description: validates complex email
+  candidate: { e: "firstname.lastname-work@sub.domain.com" }
+  template: { e: "$email" }
+  expected: []
+- description: validates underscore email
+  candidate: { e: "my_internal_id@company.io" }
+  template: { e: "$email" }
+  expected: []
+- description: validates long tld email
+  candidate: { e: "administrator@museum.photography" }
+  template: { e: "$email" }
+  expected: []
+- description: validates short email
+  candidate: { e: "i@biwan.me" }
+  template: { e: "$email" }
+  expected: []
+
+# Invalid emails
+- description: rejects plain address
+  candidate: { e: plainaddress }
+  template: { e: "$email" }
+  expected:
+    - code: incorrect-type
+      expected: valid email address
+      candidate: plainaddress
+      path: [e]
+- description: rejects missing domain
+  candidate: { e: "user@" }
+  template: { e: "$email" }
+  expected:
+    - code: incorrect-type
+      expected: valid email address
+      candidate: "user@"
+      path: [e]
+- description: rejects double at sign
+  candidate: { e: "user@domain@domain.com" }
+  template: { e: "$email" }
+  expected:
+    - code: incorrect-type
+      expected: valid email address
+      candidate: "user@domain@domain.com"
+      path: [e]
+- description: rejects trailing dot in domain
+  candidate: { e: "user@domain." }
+  template: { e: "$email" }
+  expected:
+    - code: incorrect-type
+      expected: valid email address
+      candidate: "user@domain."
+      path: [e]
+- description: rejects consecutive dots in local
+  candidate: { e: "user..name@domain.com" }
+  template: { e: "$email" }
+  expected:
+    - code: incorrect-type
+      expected: valid email address
+      candidate: "user..name@domain.com"
+      path: [e]
+- description: rejects space in local
+  candidate: { e: "user name@domain.com" }
+  template: { e: "$email" }
+  expected:
+    - code: incorrect-type
+      expected: valid email address
+      candidate: "user name@domain.com"
+      path: [e]
+- description: rejects hash in local
+  candidate: { e: "user#name@domain.com" }
+  template: { e: "$email" }
+  expected:
+    - code: incorrect-type
+      expected: valid email address
+      candidate: "user#name@domain.com"
+      path: [e]
+- description: rejects non-string email
+  candidate: { e: 12345 }
+  template: { e: "$email" }
+  expected:
+    - code: incorrect-type
+      expected: string
+      candidate: "12345"
+      path: [e]

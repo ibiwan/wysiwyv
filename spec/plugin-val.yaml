@@ -1,0 +1,57 @@
+# $val plugin — resolve named values from setup predefs and
+# first-seen candidate bindings.
+#
+# setup.$val provides predefined name→value mappings.
+# Names not in predefs are bound to the first candidate value seen,
+# and subsequent uses must match that bound value.
+
+- description: valid simple match with predefs and first-seen binding
+  setup: { $val: { apple: ball, banana: bat } }
+  candidate:
+    team: Yankees
+    base: ball
+    diamond: { swing: bat }
+    uniform: { homeColors: Yankees }
+  template:
+    team: { $val: team }
+    base: { $val: apple }
+    diamond: { swing: { $val: banana } }
+    uniform: { homeColors: { $val: team } }
+  expected: []
+
+- description: shallow mismatch against predef
+  setup: { $val: { apple: ball } }
+  candidate: { shape: spheroid }
+  template: { shape: { $val: apple } }
+  expected:
+    - code: unmatched-value
+      key: apple
+      expected: ball
+      candidate: spheroid
+      path: [shape]
+
+- description: deep mismatch against predef
+  setup: { $val: { peach: cat } }
+  candidate: { nested: { fuzzbearer: dog } }
+  template: { nested: { fuzzbearer: { $val: peach } } }
+  expected:
+    - code: unmatched-value
+      key: peach
+      expected: cat
+      candidate: dog
+      path: [nested, fuzzbearer]
+
+- description: repeat first-seen binding mismatch
+  setup: { $val: {} }
+  candidate:
+    shape: carrot
+    nested: { crunchable: celery }
+  template:
+    shape: { $val: crunch }
+    nested: { crunchable: { $val: crunch } }
+  expected:
+    - code: unmatched-value
+      key: crunch
+      expected: carrot
+      candidate: celery
+      path: [nested, crunchable]

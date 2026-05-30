@@ -1,0 +1,24 @@
+- description: validates true
+  candidate: { b: true }
+  template: { b: "$bool" }
+  expected: []
+- description: validates false
+  candidate: { b: false }
+  template: { b: "$bool" }
+  expected: []
+- description: rejects non-boolean
+  candidate: { b: 27 }
+  template: { b: "$bool" }
+  expected:
+    - code: incorrect-type
+      expected: boolean
+      candidate: "27"
+      path: [b]
+- description: rejects boolish string
+  candidate: { b: "true" }
+  template: { b: "$bool" }
+  expected:
+    - code: incorrect-type
+      expected: boolean
+      candidate: "true"
+      path: [b]

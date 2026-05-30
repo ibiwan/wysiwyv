@@ -1,0 +1,215 @@
+- description: pass when candidate is identical to expected
+  candidate: &default_data
+    a: 1,
+    b: c,
+    d: true,
+    e: ~,
+    f: [1, 2, 3]
+    g: { h: 4 }
+    i: 5.67,
+    j: { nested: { value: test } }
+  template: *default_data
+  expected: []
+- description: fail when candidate has extra proprties
+  candidate: {a: 1, extra: value}
+  template:  {a: 1}
+  expected:
+    - code: unexpected-element
+      key: extra
+      candidate: value
+      path: [extra]
+- description: fail when candidate is missing properties
+  candidate: {a: 1}
+  template: {a: 1, b: c}
+  expected:
+    - code: missing-element
+      key: b
+      expected: c
+      path: [b]
+- description: fail when candidate has wrong value for number
+  candidate: {a: 2}
+  template: {a: 1}
+  expected:
+    - code: incorrect-value
+      expected: "1"
+      candidate: "2"
+      path: [a]
+- description: fail when candidate has wrong type for number
+  candidate: {a: not a number}
+  template: {a: 1}
+  expected:
+    - code: incorrect-type
+      expected: number
+      candidate: not a number
+      path: [a]
+- description: fail when candidate has wrong value for string
+  candidate: {b: wrong string}
+  template: {b: c}
+  expected:
+    - code: incorrect-value
+      expected: c
+      candidate: wrong string
+      path: [b]
+- description: fail when candidate has wrong type for string
+  candidate: {b: 123}
+  template: {b: c}
+  expected:
+    - code: incorrect-type
+      expected: string
+      candidate: "123"
+      path: [b]
+- description: fail when candidate has wrong boolean
+  candidate: {d: false}
+  template: {d: true}
+  expected:
+    - code: incorrect-value
+      expected: "true"
+      candidate: "false"
+      path: [d]
+- description: fail when candidate has wrong type for boolean
+  candidate: {d: "not a boolean"}
+  template: {d: true}
+  expected:
+    - code: incorrect-type
+      expected: boolean
+      candidate: not a boolean
+      path: [d]
+- description: fail when candidate has wrong null value
+  candidate: {e: some string}
+  template: {e: null}
+  expected:
+    - code: incorrect-type
+      expected: "null"
+      candidate: "some string"
+      path: [e]
+- description: fail when candidate has wrong type for array
+  candidate: {f: {a: b}}
+  template: {f: [1, 2, 3]}
+  expected:
+    - code: incorrect-type
+      expected: "array"
+      candidate: '{"a":"b"}'
+      path: [f]
+- description: fail when candidate has short array
+  candidate: {f: [1]}
+  template: {f: [1, 2, 3]}
+  expected:
+    - code: incorrect-attribute
+      key: "Array length"
+      expected: "3"
+      candidate: "1"
+      path: [f]
+    - code: missing-element
+      key: "index 1"
+      expected: "2"
+      path: [f, 1]
+    - code: missing-element
+      key: "index 2"
+      expected: "3"
+      path: [f, 2]
+- description: fail when candidate has long array
+  candidate: {f: [1, 2, 3, 4]}
+  template: {f: [1, 2, 3]}
+  expected:
+    - code: incorrect-attribute
+      key: "Array length"
+      expected: "3"
+      candidate: "4"
+      path: [f]
+- description: fail when candidate has wrong type in array
+  candidate: {f: [1, "not a number", 3]}
+  template: {f: [1, 2, 3]}
+  expected:
+    - code: incorrect-type
+      expected: "number"
+      candidate: "not a number"
+      path: [f, 1]
+- description: fail when candidate has wrong value in array
+  candidate: {f: [1, 99, 3]}
+  template: {f: [1, 2, 3]}
+  expected:
+    - code: incorrect-value
+      expected: "2"
+      candidate: "99"
+      path: [f, 1]
+- description: fail when candidate has wrong type for object
+  candidate: {g: []}
+  template: {g: {h: 4}}
+  expected:
+    - code: incorrect-type
+      expected: "object"
+      candidate: "[]"
+      path: [g]
+- description: fail when candidate has wrong nested object value
+  candidate: {g: {h: 5}}
+  template: {g: {h: 4}}
+  expected:
+    - code: incorrect-value
+      expected: "4"
+      candidate: "5"
+      path: [g, h]
+- description: fail when candidate has wrong nested object type
+  candidate: {g: {h: "not a number"}}
+  template: {g: {h: 4}}
+  expected:
+    - code: incorrect-type
+      expected: "number"
+      candidate: "not a number"
+      path: [g, h]
+- description: fail when candidate has wrong nested object value in deeper nesting
+  candidate: { j: { nested: { value: wrong value } } }
+  template: { j: { nested: { value: test } } }
+  expected:
+    - code: incorrect-value
+      expected: test
+      candidate: wrong value
+      path: [j, nested, value]
+- description: fail when candidate has missing key in deeper nesting
+  candidate: { j: { nested: {} } }
+  template: { j: { nested: { value: test } } }
+  expected:
+    - code: missing-element
+      key: value
+      expected: test
+      path: [j, nested, value]
+- description: fail when candidate has extra key in deeper nesting
+  candidate: { j: { nested: { value: test, extra: value } } }
+  template: { j: { nested: { value: test } } }
+  expected:
+    - code: unexpected-element
+      key: extra
+      candidate: value
+      path: [j, nested, extra]
+- description: treat unrecognized $-strings as non-keys
+  candidate: { $data: true }
+  template: { $data: false }
+  expected:
+    - code: incorrect-value
+      expected: "false"
+      candidate: "true"
+      path: [$data]
+- description: rejects unsupported types in template
+  template: { anUndefined: __UNDEFINED__, aSymbol: __SYMBOL__, aBigInt: __BIGINT__ }
+  candidate: { anUndefined: "", aSymbol: "", aBigInt: "" }
+  expected:
+    - code: invalid-config
+      message: "Unsupported value type in expected object: '__UNDEFINED__'"
+      path: [anUndefined]
+    - code: invalid-config
+      message: "Unsupported value type in expected object: '__SYMBOL__'"
+      path: [aSymbol]
+    - code: invalid-config
+      message: "Unsupported value type in expected object: '__BIGINT__'"
+      path: [aBigInt]
+- description: pass when candidate is also an empty object
+  candidate: {}
+  template: {}
+  expected: []
+- description: fail when empty template but candidate has properties
+  candidate: { badKey: badValue }
+  template: {}
+  expected:
+    - code: unexpected-element
+      key: badKey
+      candidate: badValue
+      path: [badKey]

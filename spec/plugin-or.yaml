@@ -1,0 +1,45 @@
+- description: or succeeds on a single true predicate
+  candidate: { number: 1 }
+  template: { number: { $or: ["$number"] } }
+  expected: []
+- description: or fails on no predicates
+  candidate: { number: 1 }
+  template: { number: { $or: [] } }
+  expected:
+    - code: invalid-config
+      message: "$or must take one or more predicates"
+      path: [number]
+- description: or succeeds on multiple true predicates
+  candidate: { someId: "d48ad255-1623-4998-8b27-d0420fe5f835" }
+  template: { someId: { $or: ["$string", "$uuid"] } }
+  expected: []
+- description: or succeeds when latter predicate true
+  candidate: { name: George }
+  template: { name: { $or: ["$string", "$uuid"] } }
+  expected: []
+- description: or succeeds when former predicate true
+  candidate: { name: George }
+  template: { name: { $or: ["$uuid", "$string"] } }
+  expected: []
+- description: or reports all fails
+  candidate: { name: George }
+  template: { name: { $or: ["$uuid", "$number"] } }
+  expected:
+    - code: incorrect-aggregate
+      key: "$or"
+      path: [name]
+    - code: incorrect-type
+      expected: UUID
+      candidate: George
+      path: [name]
+    - code: incorrect-type
+      expected: number
+      candidate: George
+      path: [name]
+- description: or rejects malformed parameters
+  candidate: { name: Purple }
+  template: { name: { $or: "$string" } }
+  expected:
+    - code: invalid-config
+      message: "$or value should be an array of templates"
+      path: [name]

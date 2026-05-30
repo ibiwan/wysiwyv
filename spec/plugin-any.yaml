@@ -1,0 +1,125 @@
+# YAML-native types
+- description: any accepts null
+  candidate: { a: null }
+  template: { a: "$any" }
+  expected: []
+- description: any accepts zero
+  candidate: { a: 0 }
+  template: { a: "$any" }
+  expected: []
+- description: any accepts number
+  candidate: { a: 42 }
+  template: { a: "$any" }
+  expected: []
+- description: any accepts false
+  candidate: { a: false }
+  template: { a: "$any" }
+  expected: []
+- description: any accepts true
+  candidate: { a: true }
+  template: { a: "$any" }
+  expected: []
+- description: any accepts empty string
+  candidate: { a: "" }
+  template: { a: "$any" }
+  expected: []
+- description: any accepts string
+  candidate: { a: hello }
+  template: { a: "$any" }
+  expected: []
+- description: any accepts empty array
+  candidate: { a: [] }
+  template: { a: "$any" }
+  expected: []
+- description: any accepts array
+  candidate: { a: [1] }
+  template: { a: "$any" }
+  expected: []
+- description: any accepts empty object
+  candidate: { a: {} }
+  template: { a: "$any" }
+  expected: []
+- description: any accepts object
+  candidate: { a: { b: 1 } }
+  template: { a: "$any" }
+  expected: []
+
+# Placeholder types
+- description: any accepts undefined
+  candidate: { a: __UNDEFINED__ }
+  template: { a: "$any" }
+  expected: []
+- description: any accepts date
+  candidate: { a: __DATE__ }
+  template: { a: "$any" }
+  expected: []
+- description: any accepts regex
+  candidate: { a: __REGEX__ }
+  template: { a: "$any" }
+  expected: []
+- description: any accepts symbol
+  candidate: { a: __SYMBOL__ }
+  template: { a: "$any" }
+  expected: []
+- description: any accepts null-prototype object
+  candidate: { a: __NULL_PROTO__ }
+  template: { a: "$any" }
+  expected: []
+- description: any accepts NaN
+  candidate: { a: __NAN__ }
+  template: { a: "$any" }
+  expected: []
+- description: any accepts positive infinity
+  candidate: { a: __POS_INF__ }
+  template: { a: "$any" }
+  expected: []
+- description: any accepts negative infinity
+  candidate: { a: __NEG_INF__ }
+  template: { a: "$any" }
+  expected: []
+- description: any accepts bigint
+  candidate: { a: __BIGINT__ }
+  template: { a: "$any" }
+  expected: []
+- description: any accepts anonymous function
+  candidate: { a: __ANON_FN__ }
+  template: { a: "$any" }
+  expected: []
+- description: any accepts class
+  candidate: { a: __CLASS__ }
+  template: { a: "$any" }
+  expected: []
+- description: any accepts map
+  candidate: { a: __MAP__ }
+  template: { a: "$any" }
+  expected: []
+- description: any accepts set
+  candidate: { a: __SET__ }
+  template: { a: "$any" }
+  expected: []
+- description: any accepts boxed string
+  candidate: { a: __BOXED_STRING__ }
+  template: { a: "$any" }
+  expected: []
+
+# JS-specific types (skipped if placeholder unavailable)
+- description: any accepts readable stream
+  candidate: { a: __READABLE_STREAM__ }
+  template: { a: "$any" }
+  expected: []
+- description: any accepts proxy
+  candidate: { a: __PROXY__ }
+  template: { a: "$any" }
+  expected: []
+- description: any accepts async function
+  candidate: { a: __ASYNC_FN__ }
+  template: { a: "$any" }
+  expected: []
+- description: any accepts generator function
+  candidate: { a: __GENERATOR_FN__ }
+  template: { a: "$any" }
+  expected: []
+- description: any accepts class instance
+  candidate: { a: __CLASS_INSTANCE__ }
+  template: { a: "$any" }
+  expected: []

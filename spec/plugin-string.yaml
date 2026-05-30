@@ -1,0 +1,16 @@
+- description: validates a string
+  candidate: { s: a string }
+  template: { s: "$string" }
+  expected: []
+- description: validates an empty string
+  candidate: { s: "" }
+  template: { s: "$string" }
+  expected: []
+- description: rejects non-string
+  candidate: { s: 27 }
+  template: { s: "$string" }
+  expected:
+    - code: incorrect-type
+      expected: string
+      candidate: "27"
+      path: [s]
